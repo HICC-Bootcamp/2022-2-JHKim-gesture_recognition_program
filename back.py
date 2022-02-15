@@ -5,7 +5,7 @@ def datasetIsEmpty(): #dataset이 비어있는지 확인하는 함수, 비어있
     import os
     path='./dataset'
     length=len(os.listdir(path))
-    if(length>0):
+    if (length>0):
         print('dataset is not empty')
         return 0
     else:
@@ -27,6 +27,53 @@ def ConfirmRepetition():
             if first==second:
                 return 1
     return 0
+
+def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작업관리자, 가상화면생성, 가상화면닫기, 음량up/down/mute)
+    import pyautogui
+    
+    if function=='바탕화면':
+        pyautogui.keyDown('win')
+        pyautogui.press('d')
+        pyautogui.keyUp('win')
+    elif function=='특정화면캡쳐':
+        pyautogui.keyDown('win')
+        pyautogui.keyDown('shift')
+        pyautogui.press('s')
+        pyautogui.keyUp('win')
+        pyautogui.keyUp('shift')
+    elif function=='작업관리자':
+        pyautogui.keyDown('ctrl')
+        pyautogui.keyDown('shift')
+        pyautogui.press('esc')
+        pyautogui.keyUp('ctrl')
+        pyautogui.keyUp('shift')
+
+
+
+
+
+
+
+    '''elif function=='가상화면생성': #//issue//새로 생성된 가상 데스크톱에서 프로그램을 별도로 실행시켜야 프로그램이 작동한다.
+        pyautogui.keyDown('win')
+        pyautogui.keyDown('ctrl')
+        pyautogui.press('d')
+        pyautogui.keyUp('win')
+        pyautogui.keyUp('ctrl')
+    elif function=='가상화면닫기':
+        pyautogui.keyDown('win')
+        pyautogui.keyDown('ctrl')
+        pyautogui.press('F4')
+        pyautogui.keyUp('win')
+        pyautogui.keyUp('ctrl')'''
+
+
+
+
+
+
+
+
 
 
 
