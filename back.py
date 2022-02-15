@@ -18,4 +18,17 @@ def addInformation(name, function): #이름과 기능을 리스트에 저장하�
     print('dataset_name =',dataset_name)
     print('dataset_function =',dataset_function)
 
+def ConfirmRepetition():
+    n=len(dataset_function)
+    for x in range(0,n):
+        first=dataset_function[x]
+        for y in range(x+1,n):
+            second=dataset_function[y]
+            if first==second:
+                return 1
+    return 0
+
+
+
+
 
