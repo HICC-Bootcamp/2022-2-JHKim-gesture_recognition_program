@@ -84,7 +84,16 @@ def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작
         pyautogui.press('F4')
         pyautogui.keyUp('win')
         pyautogui.keyUp('ctrl')'''
-
+def countNumOfDataset():
+    import os
+    path = './dataset'
+    length = len(os.listdir(path))
+    if (length >= 2):
+        print('More than 2 datasets exist')
+        return 1
+    else:
+        print('Less than 2 datasets exist')
+        return 0
 
 
 
