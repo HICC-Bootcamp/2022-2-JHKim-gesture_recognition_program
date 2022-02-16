@@ -18,7 +18,7 @@ def addInformation(name, function): #이름과 기능을 리스트에 저장하�
     print('dataset_name =',dataset_name)
     print('dataset_function =',dataset_function)
 
-def ConfirmRepetition():
+def confirmRepetition():
     n=len(dataset_function)
     for x in range(0,n):
         first=dataset_function[x]
@@ -47,12 +47,30 @@ def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작
         pyautogui.press('esc')
         pyautogui.keyUp('ctrl')
         pyautogui.keyUp('shift')
-
-
-
-
-
-
+    elif function=='볼륨up':
+        from pynput.keyboard import Key, Controller
+        keyboard = Controller()
+        for i in range(5):
+            keyboard.press(Key.media_volume_up)
+            keyboard.release(Key.media_volume_up)
+    elif function=='볼륨down':
+        from pynput.keyboard import Key, Controller
+        keyboard = Controller()
+        for i in range(5):
+            keyboard.press(Key.media_volume_down)
+            keyboard.release(Key.media_volume_down)
+    elif function=='음소거':
+        from ctypes import cast, POINTER
+        from comtypes import CLSCTX_ALL
+        from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(
+            IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        if volume.GetMute():
+            volume.SetMute(0, None)
+        else:
+            volume.SetMute(1, None)
 
     '''elif function=='가상화면생성': #//issue//새로 생성된 가상 데스크톱에서 프로그램을 별도로 실행시켜야 프로그램이 작동한다.
         pyautogui.keyDown('win')
