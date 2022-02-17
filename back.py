@@ -114,7 +114,15 @@ def getDataset_image():
 
 def RecordGesture():
 
+
 def trainModel():
+
+
+#백에서 사용 예정인 함수
+def addDataset_image(image):
+    dataset_name.append(image)
+
+
 
 
 
