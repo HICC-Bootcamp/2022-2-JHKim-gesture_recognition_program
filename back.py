@@ -1,5 +1,7 @@
 dataset_name=[] #dataset 이름
 dataset_function=[] #dataset 기능
+dataset_image=[] #영상 이름
+
 
 def datasetIsEmpty(): #dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
     import os
@@ -84,6 +86,7 @@ def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작
         pyautogui.press('F4')
         pyautogui.keyUp('win')
         pyautogui.keyUp('ctrl')'''
+
 def countNumOfDataset():
     import os
     path = './dataset'
@@ -94,6 +97,26 @@ def countNumOfDataset():
     else:
         print('Less than 2 datasets exist')
         return 0
+
+def deleteGesture(name,function,dataset):
+    dataset_name.remove(name)
+    dataset_function.remove(function)
+    dataset_image.remove(dataset)
+
+def getDataset_name():
+    return dataset_name
+
+def getDataset_function():
+    return dataset_function
+
+def getDataset_image():
+    return dataset_image
+
+def RecordGesture():
+
+def trainModel():
+
+
 
 
 
