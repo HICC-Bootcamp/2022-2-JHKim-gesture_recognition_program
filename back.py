@@ -122,6 +122,11 @@ def trainModel():
 def addDataset_image(image):
     dataset_name.append(image)
 
+def changeModel(num, name, func):
+    dataset_name[num]=name
+    dataset_function[num]=func
+    print(name,', ', func,'이 등록되었습니다.')
+
 
 
 
