@@ -26,6 +26,11 @@
     <property name="mouseTracking">
      <bool>false</bool>
     </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid rgb(175, 69, 237);
+border-radius: 5px;
+</string>
+    </property>
     <property name="sizeAdjustPolicy">
      <enum>QAbstractScrollArea::AdjustIgnored</enum>
     </property>
@@ -53,6 +58,12 @@
          <family>맑은 고딕</family>
          <pointsize>14</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: white;
+border: 1px solid rgb(175, 69, 237);
+border-radius: 5px;
+</string>
        </property>
        <item>
         <property name="text">
@@ -113,6 +124,12 @@
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
        </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: white;
+border: 1px solid rgb(175, 69, 237);
+border-radius: 5px;
+</string>
+       </property>
        <property name="text">
         <string>이름</string>
        </property>
@@ -128,7 +145,7 @@
       </widget>
      </item>
      <item row="0" column="2">
-      <widget class="QPushButton" name="okayButton2">
+      <widget class="QPushButton" name="okayButton">
        <property name="maximumSize">
         <size>
          <width>200</width>
@@ -140,6 +157,12 @@
          <family>맑은 고딕</family>
          <pointsize>20</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: white;
+border: 1px solid rgb(175, 69, 237);
+border-radius: 5px;
+</string>
        </property>
        <property name="text">
         <string>확인</string>

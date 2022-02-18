@@ -88,14 +88,24 @@
         <font>
          <family>맑은 고딕</family>
          <pointsize>20</pointsize>
+         <underline>false</underline>
          <kerning>true</kerning>
         </font>
        </property>
        <property name="tabletTracking">
         <bool>false</bool>
        </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: white;
+border: 1px solid rgb(175, 69, 237);
+border-radius: 5px;
+</string>
+       </property>
        <property name="sizeAdjustPolicy">
         <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
        </property>
        <item>
         <property name="text">
@@ -153,6 +163,12 @@
        </property>
        <property name="contextMenuPolicy">
         <enum>Qt::DefaultContextMenu</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: white;
+border: 1px solid rgb(175, 69, 237);
+border-radius: 5px;
+</string>
        </property>
        <property name="text">
         <string>확인</string>

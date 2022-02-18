@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Gesture_recognition</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <property name="animated">
    <bool>false</bool>
   </property>
@@ -50,8 +53,13 @@
       <height>161</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QProgressBar{
+background-color: rgb(98, 114, 164);
+}</string>
+    </property>
     <property name="value">
-     <number>66</number>
+     <number>20</number>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -83,6 +91,9 @@
       <family>맑은 고딕</family>
       <pointsize>20</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>확인</string>

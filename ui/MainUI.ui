@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Gesture_recognition</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGraphicsView" name="video">
     <property name="geometry">
@@ -25,6 +28,10 @@
     </property>
     <property name="mouseTracking">
      <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid rgb(175, 69, 237);
+border-radius: 5px;</string>
     </property>
     <property name="sizeAdjustPolicy">
      <enum>QAbstractScrollArea::AdjustIgnored</enum>
@@ -54,6 +61,12 @@
          <pointsize>20</pointsize>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: white;
+border: 1px solid rgb(175, 69, 237);
+border-radius: 5px;
+</string>
+       </property>
        <property name="text">
         <string>제스처 실행</string>
        </property>
@@ -72,6 +85,12 @@
          <family>맑은 고딕</family>
          <pointsize>20</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: white;
+border: 1px solid rgb(175, 69, 237);
+border-radius: 5px;
+</string>
        </property>
        <property name="text">
         <string>제스처 수정</string>
