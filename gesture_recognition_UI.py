@@ -2,6 +2,7 @@ import sys
 from PyQt5.uic import loadUi
 from create_dataset import startVideoCapture
 
+from back import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
@@ -11,8 +12,24 @@ NumofGesture = 2
 #나중에 추가할 때 저장하고자 하는 곳을 기억하는 변수
 add_id = 0
 
-#initUI: 등록할 제스처의 수를 입력받는 UI
+#Gesture_recognition: 맨 처음 화면
 class Gesture_recognition(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        loadUi("ui/welcomeUI.ui", self)
+
+        self.startButton.clicked.connect(self.startButtonClicked)
+
+    def startButtonClicked(self):
+        # 데이터 셋이 비어있으면 초기화면으로, 아니면 메인화면으로 간다.
+        if(not datasetIsEmpty()):
+            widget.setCurrentIndex(widget.currentIndex() + 4)
+        else:
+            widget.setCurrentIndex(widget.currentIndex() + 1)
+
+
+#initUI: 등록할 제스처의 수를 입력 받는 UI
+class initUI(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi("ui/initUI.ui", self)
@@ -26,11 +43,8 @@ class Gesture_recognition(QMainWindow):
     def InitNumOfGesture(self):
         global NumofGesture
         NumofGesture = int(self.SelectNumOfGesture.currentText())
-        print(NumofGesture)
 
     def okayButtonClicked(self):
-        adddata = addDataset_UI()
-        widget.addWidget(adddata)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
 
@@ -47,17 +61,21 @@ class addDataset_UI(QMainWindow):
     def okayButtonClicked(self):
         # 현재 반복 횟수가 초기에 설정한 제스처 수와 같아질 때 저장을 멈추고 학습화면으로 넘어간다.
         if(self.current >= NumofGesture):
-            progress = progressbar_UI()
-            widget.addWidget(progress)
             widget.setCurrentIndex(widget.currentIndex() + 1)
         else:
             name = self.lineEdit_name.text()
             function = self.comboBox_function.currentText()
-            print(name)
-            print(function)
+
+            # back.py에 이름과 기능 저장
+            addInformation(name, function)
+
+            # 기능이 중복이라면 추가하지 않는다. (오류발생 : 한 개 추가하고 두 번째 추가할 때 전부 중복 처리된다.)
+            if(confirmRepetition()):
+                QMessageBox.warning(self, "기능 중복 발생", "기능이 중복되었습니다. 다른 기능을 선택하세요.")
+                return
+
             self.current += 1
             startVideoCapture(self.current, name)
-
 
 
 #progressbar_UI: 학습 상황을 progressBar를 통해 보여준다.
@@ -107,8 +125,6 @@ class progressbar_UI(QMainWindow):
 
     # 확인버튼을 누르면 MainUI로 넘어간다.
     def okayButtonClicked(self):
-        mainui = Main_UI()
-        widget.addWidget(mainui)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
 
@@ -121,12 +137,11 @@ class Main_UI(QMainWindow):
         self.start_button.clicked.connect(self.startButtonClicked)
         self.edit_button.clicked.connect(self.editButtonClicked)
 
+    # opencv연동해서 아마도(test.py) 연동해서 실행해야 할 듯
     def startButtonClicked(self):
         pass
 
     def editButtonClicked(self):
-        modifyui = ModifyUI()
-        widget.addWidget(modifyui)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
 
@@ -218,10 +233,21 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     widget = QStackedWidget()
-    initui = Gesture_recognition()
+    gestureRecognitionProgram = Gesture_recognition()
+    initui = initUI()
+    adddata = addDataset_UI()
+    progress = progressbar_UI()
+    mainui = Main_UI()
+    modifyui = ModifyUI()
 
     widget.setWindowTitle("Gesture_recognition")
+
+    widget.addWidget(gestureRecognitionProgram)
     widget.addWidget(initui)
+    widget.addWidget(adddata)
+    widget.addWidget(progress)
+    widget.addWidget(mainui)
+    widget.addWidget(modifyui)
 
     widget.setFixedWidth(1600)
     widget.setFixedHeight(900)
