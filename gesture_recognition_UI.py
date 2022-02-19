@@ -1,6 +1,6 @@
 import sys
 from PyQt5.uic import loadUi
-from PyQt5.QtGui import *
+from create_dataset import startVideoCapture
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -28,11 +28,11 @@ class Gesture_recognition(QMainWindow):
         NumofGesture = int(self.SelectNumOfGesture.currentText())
         print(NumofGesture)
 
-
     def okayButtonClicked(self):
         adddata = addDataset_UI()
         widget.addWidget(adddata)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+
 
 #addDataset_UI: 데이터셋을 추가할 수 있는 UI(이름, 기능, 화면 녹화)
 class addDataset_UI(QMainWindow):
@@ -51,11 +51,13 @@ class addDataset_UI(QMainWindow):
             widget.addWidget(progress)
             widget.setCurrentIndex(widget.currentIndex() + 1)
         else:
-            self.current += 1
             name = self.lineEdit_name.text()
             function = self.comboBox_function.currentText()
             print(name)
             print(function)
+            self.current += 1
+            startVideoCapture(self.current, name)
+
 
 
 #progressbar_UI: 학습 상황을 progressBar를 통해 보여준다.

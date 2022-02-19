@@ -23,9 +23,9 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>590</x>
       <y>120</y>
-      <width>421</width>
+      <width>501</width>
       <height>271</height>
      </rect>
     </property>
@@ -109,7 +109,7 @@ background-color: rgb(98, 114, 164);
      <x>0</x>
      <y>0</y>
      <width>1600</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
