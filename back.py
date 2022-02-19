@@ -241,7 +241,8 @@ def RecordGesture(idx, name):
 
 #백에서 사용 예정인
 def addDataset_image(image):
-    dataset_name.append(image)
+    dataset_image.append(image)
+    print('dataset_image =', dataset_image)
 
 def changeModel(num, name, func):
     dataset_name[num]=name
@@ -254,27 +255,44 @@ def ReadDatasetInformation():
         print('Dataset 정보 파일 존재')
         f = open("datasetInformation.txt", "r")
         line = f.readline()
-        while True:
-            line=line.strip()
-            dataset_name.append(line)
-            line = f.readline()
-            line = line.strip()
-            dataset_function.append(line)
-            line = f.readline()
-            line = line.strip()
-            dataset_image.append(line)
-            print(getDataset_name())
-            print(getDataset_function())
-            print(getDataset_image())
-            line=f.readline()
-            if not line:
-                break
-        f.close
+        list=line.split(' ')
+        list.remove('\n')
+        dataset_name=list
+        print('dataset_name = ',dataset_name)
+
+        line = f.readline()
+        list = line.split(' ')
+        list.remove('\n')
+        dataset_function = list
+        print('dataset_function = ', dataset_function)
+
+        line = f.readline()
+        dataset_image = line.split(' ')
+        dataset_image.remove('')
+        print('dataset_image = ', dataset_image)
+
+        f.close()
     else:
         print("Dataset 정보 파일 존재X")
 
 def WriteDatasetInformation():
-    
+    f = open("datasetInformation.txt", "w")
+    for n in range(0, len(dataset_name)):
+        f.write(dataset_name[n])
+        f.write(' ')
+    f.write('\n')
+    for n in range(0, len(dataset_name)):
+        f.write(dataset_function[n])
+        f.write(' ')
+    f.write('\n')
+    for n in range(0, len(dataset_name)):
+        f.write(dataset_image[n])
+        f.write(' ')
+    f.close()
+
+
+
+
 
 
 
