@@ -248,12 +248,33 @@ def changeModel(num, name, func):
     dataset_function[num]=func
     print(name,', ', func,'이 등록되었습니다.')
 
-def writeDatasetInformation():
+def ReadDatasetInformation():
     import os
     if os.path.isfile('datasetInformation.txt'):
         print('Dataset 정보 파일 존재')
-    else
-    #f=open("datasetInformation","r")
+        f = open("datasetInformation.txt", "r")
+        line = f.readline()
+        while True:
+            line=line.strip()
+            dataset_name.append(line)
+            line = f.readline()
+            line = line.strip()
+            dataset_function.append(line)
+            line = f.readline()
+            line = line.strip()
+            dataset_image.append(line)
+            print(getDataset_name())
+            print(getDataset_function())
+            print(getDataset_image())
+            line=f.readline()
+            if not line:
+                break
+        f.close
+    else:
+        print("Dataset 정보 파일 존재X")
+
+def WriteDatasetInformation():
+    
 
 
 
