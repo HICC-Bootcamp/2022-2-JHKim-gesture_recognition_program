@@ -1,8 +1,9 @@
 import sys
 from PyQt5.uic import loadUi
-from create_dataset import startVideoCapture
 
-from back import *
+from back import datasetIsEmpty, addInformation, confirmRepetition, deleteDatasetNameFunction, RecordGesture
+from back import getDataset_name, getDataset_function, getDataset_image
+
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
@@ -69,13 +70,14 @@ class addDataset_UI(QMainWindow):
             # back.py에 이름과 기능 저장
             addInformation(name, function)
 
-            # 기능이 중복이라면 추가하지 않는다. (오류발생 : 한 개 추가하고 두 번째 추가할 때 전부 중복 처리된다.)
+            # 기능이 중복이라면 추가하지 않는다
             if(confirmRepetition()):
+                deleteDatasetNameFunction(name, function)
                 QMessageBox.warning(self, "기능 중복 발생", "기능이 중복되었습니다. 다른 기능을 선택하세요.")
                 return
 
             self.current += 1
-            startVideoCapture(self.current, name)
+            RecordGesture(self.current, name)
 
 
 #progressbar_UI: 학습 상황을 progressBar를 통해 보여준다.
@@ -134,12 +136,19 @@ class Main_UI(QMainWindow):
         super().__init__()
         loadUi("ui/MainUI.ui", self)
 
+        self.running = False
+
         self.start_button.clicked.connect(self.startButtonClicked)
         self.edit_button.clicked.connect(self.editButtonClicked)
 
     # opencv연동해서 아마도(test.py) 연동해서 실행해야 할 듯
     def startButtonClicked(self):
-        pass
+        if(self.running == False):
+            self.start_button.setText('중지')
+            self.running = True
+        else:
+            self.start_button.setText('제스처 실행')
+            self.running = False
 
     def editButtonClicked(self):
         widget.setCurrentIndex(widget.currentIndex() + 1)
@@ -150,6 +159,10 @@ class ModifyUI(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi("ui/ModifyUI.ui", self)
+
+        self.datasetName = list()
+        self.datasetFunc = list()
+        self.LoadDataset()
 
         self.nameList = [self.name_1, self.name_2, self.name_3, self.name_4, self.name_5, self.name_6, self.name_7, self.name_8]
         self.functionList = [self.comboBox_function_1, self.comboBox_function_2, self.comboBox_function_3, \
@@ -184,6 +197,17 @@ class ModifyUI(QMainWindow):
         self.save_8.clicked.connect(lambda: self.saveButtonClicked(8))
 
         self.okayButton.clicked.connect(self.okayButtonClicked)
+
+    def LoadDataset(self):
+        self.datasetName = getDataset_name()
+        self.datasetFunc = getDataset_function()
+
+        for i in self.datasetName:
+            self.nameList[i].setText(QCoreApplication.translate("", self.datasetName[i]))
+
+        for j in self.datasetFunc:
+            self.functionList[j].setCurrentText(self.datasetFunc[j])
+
 
     def plusButtonClicked(self, id):
         global add_id
