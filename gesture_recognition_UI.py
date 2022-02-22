@@ -3,6 +3,7 @@ from PyQt5.uic import loadUi
 
 from back import datasetIsEmpty, addInformation, confirmRepetition, deleteDatasetNameFunction, RecordGesture
 from back import getDataset_name, getDataset_function, getDataset_image
+from back import ReadDatasetInformation, WriteDatasetInformation
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -12,6 +13,9 @@ NumofGesture = 2
 
 #나중에 추가할 때 저장하고자 하는 곳을 기억하는 변수
 add_id = 0
+
+dataset_name = list()
+dataset_func = list()
 
 #Gesture_recognition: 맨 처음 화면
 class Gesture_recognition(QMainWindow):
@@ -62,6 +66,7 @@ class addDataset_UI(QMainWindow):
     def okayButtonClicked(self):
         # 현재 반복 횟수가 초기에 설정한 제스처 수와 같아질 때 저장을 멈추고 학습화면으로 넘어간다.
         if(self.current >= NumofGesture):
+            WriteDatasetInformation()
             widget.setCurrentIndex(widget.currentIndex() + 1)
         else:
             name = self.lineEdit_name.text()
@@ -160,8 +165,6 @@ class ModifyUI(QMainWindow):
         super().__init__()
         loadUi("ui/ModifyUI.ui", self)
 
-        self.datasetName = list()
-        self.datasetFunc = list()
         self.LoadDataset()
 
         self.nameList = [self.name_1, self.name_2, self.name_3, self.name_4, self.name_5, self.name_6, self.name_7, self.name_8]
@@ -199,14 +202,23 @@ class ModifyUI(QMainWindow):
         self.okayButton.clicked.connect(self.okayButtonClicked)
 
     def LoadDataset(self):
-        self.datasetName = getDataset_name()
-        self.datasetFunc = getDataset_function()
+        ReadDatasetInformation()
+        global dataset_name
+        dataset_name = getDataset_name()
 
-        for i in self.datasetName:
-            self.nameList[i].setText(QCoreApplication.translate("", self.datasetName[i]))
+        global dataset_func
+        dataset_func = getDataset_function()
 
-        for j in self.datasetFunc:
-            self.functionList[j].setCurrentText(self.datasetFunc[j])
+        nameidx = 0
+        funcidx = 0
+
+        for i in range(len(dataset_name)):
+            self.nameList[nameidx].setText(QCoreApplication.translate("", dataset_name[i]))
+            nameidx += 1
+
+        for j in range(len(dataset_func)):
+            self.functionList[funcidx].setCurrentText(dataset_func[j])
+            funcidx += 1
 
 
     def plusButtonClicked(self, id):

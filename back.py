@@ -220,9 +220,8 @@ def RecordGesture(idx, name):
                         mp_drawing.draw_landmarks(img, res, mp_hands.HAND_CONNECTIONS)  # 랜드마크 그린다.
 
                 cv2.imshow('img', img)
-                #if cv2.waitKey(1) == ord('q'):
-                #   break
-            cv2.destroyAllWindows()
+                if cv2.waitKey(1) == ord('q'):
+                    break
 
             data = np.array(data)  # 데이터를 모았으면 numpy 배열로 변환
             print(action, data.shape)
@@ -235,8 +234,10 @@ def RecordGesture(idx, name):
 
             full_seq_data = np.array(full_seq_data)
             print(action, full_seq_data.shape)
-            np.save(os.path.join('dataset', f'seq_%d, %s_{created_time}'% (idx, name)), full_seq_data)
+            np.save(os.path.join('dataset', f'seq_%d, %s_{created_time}' % (idx, name)), full_seq_data)
         break
+
+    cv2.destroyAllWindows()
 
 
 #백에서 사용 예정인
@@ -266,10 +267,10 @@ def ReadDatasetInformation():
         dataset_function = list
         print('dataset_function = ', dataset_function)
 
-        line = f.readline()
-        dataset_image = line.split(' ')
-        dataset_image.remove('')
-        print('dataset_image = ', dataset_image)
+        #line = f.readline()
+        #dataset_image = line.split(' ')
+        #dataset_image.remove('')
+        #print('dataset_image = ', dataset_image)
 
         f.close()
     else:
@@ -285,31 +286,7 @@ def WriteDatasetInformation():
         f.write(dataset_function[n])
         f.write(' ')
     f.write('\n')
-    for n in range(0, len(dataset_name)):
-        f.write(dataset_image[n])
-        f.write(' ')
+    #for n in range(0, len(dataset_name)):
+    #    f.write(dataset_image[n])
+    #    f.write(' ')
     f.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

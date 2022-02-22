@@ -67,37 +67,37 @@ border-radius: 5px;
        </property>
        <item>
         <property name="text">
-         <string>바탕화면으로 가기</string>
+         <string>바탕화면으로가기</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>특정화면 캡처</string>
+         <string>특정화면캡처</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>작업관리자 실행</string>
+         <string>작업관리자실행</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>가상화면 생성</string>
+         <string>가상화면생성</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>가상화면 닫기</string>
+         <string>가상화면닫기</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>음량 up</string>
+         <string>음량up</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>음량 down</string>
+         <string>음량down</string>
         </property>
        </item>
        <item>
