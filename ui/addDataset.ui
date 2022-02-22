@@ -67,7 +67,7 @@ border-radius: 5px;
        </property>
        <item>
         <property name="text">
-         <string>바탕화면으로가기</string>
+         <string>바탕화면</string>
         </property>
        </item>
        <item>
@@ -77,7 +77,7 @@ border-radius: 5px;
        </item>
        <item>
         <property name="text">
-         <string>작업관리자실행</string>
+         <string>작업관리자</string>
         </property>
        </item>
        <item>
@@ -92,12 +92,12 @@ border-radius: 5px;
        </item>
        <item>
         <property name="text">
-         <string>음량up</string>
+         <string>볼륨up</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>음량down</string>
+         <string>볼륨down</string>
         </property>
        </item>
        <item>

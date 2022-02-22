@@ -3,7 +3,7 @@ from PyQt5.uic import loadUi
 
 from back import datasetIsEmpty, addInformation, confirmRepetition, deleteDatasetNameFunction, RecordGesture
 from back import getDataset_name, getDataset_function, getDataset_image
-from back import ReadDatasetInformation, WriteDatasetInformation
+from back import ReadDatasetInformation, WriteDatasetInformation, gesture_recognition
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -15,8 +15,8 @@ NumofGesture = 2
 add_id = 0
 
 
-#Gesture_recognition: 맨 처음 화면
-class Gesture_recognition(QMainWindow):
+#GestureRecognition: 맨 처음 화면
+class GestureRecognition(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi("ui/welcomeUI.ui", self)
@@ -79,8 +79,8 @@ class addDataset_UI(QMainWindow):
                 QMessageBox.warning(self, "기능 중복 발생", "기능이 중복되었습니다. 다른 기능을 선택하세요.")
                 return
 
-            self.current += 1
             RecordGesture(self.current, name)
+            self.current += 1
 
 
 #progressbar_UI: 학습 상황을 progressBar를 통해 보여준다.
@@ -149,6 +149,8 @@ class Main_UI(QMainWindow):
         if(self.running == False):
             self.start_button.setText('중지')
             self.running = True
+            gesture_recognition()
+
         else:
             self.start_button.setText('제스처 실행')
             self.running = False
@@ -267,7 +269,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     widget = QStackedWidget()
-    gestureRecognitionProgram = Gesture_recognition()
+    gestureRecognitionProgram = GestureRecognition()
     initui = initUI()
     adddata = addDataset_UI()
     progress = progressbar_UI()
