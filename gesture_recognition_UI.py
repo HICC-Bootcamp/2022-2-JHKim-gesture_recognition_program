@@ -3,7 +3,7 @@ from PyQt5.uic import loadUi
 
 from back import datasetIsEmpty, addInformation, confirmRepetition, deleteDatasetNameFunction, RecordGesture
 from back import getDataset_name, getDataset_function, getDataset_image
-from back import ReadDatasetInformation, WriteDatasetInformation, gesture_recognition
+from back import ReadDatasetInformation, WriteDatasetInformation, gesture_recognition, stop_gesture, start_gesture
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -149,11 +149,15 @@ class Main_UI(QMainWindow):
         if(self.running == False):
             self.start_button.setText('중지')
             self.running = True
+            start_gesture()
             gesture_recognition()
 
         else:
             self.start_button.setText('제스처 실행')
             self.running = False
+            stop_gesture()
+
+
 
     def editButtonClicked(self):
         widget.setCurrentIndex(widget.currentIndex() + 1)

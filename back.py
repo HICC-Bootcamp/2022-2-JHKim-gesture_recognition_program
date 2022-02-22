@@ -2,6 +2,7 @@ dataset_name=[] #dataset 이름
 dataset_function=[] #dataset 기능
 dataset_image=[] #영상 이름
 
+start_button_clicknum = 0
 
 def datasetIsEmpty(): #dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
     import os
@@ -295,15 +296,31 @@ def WriteDatasetInformation():
         #f.write(' ')
     f.close()
 
+def start_gesture():
+    global start_button_clicknum
+    start_button_clicknum = 0
+
+def stop_gesture():
+    global start_button_clicknum
+    start_button_clicknum = 1
+
 def gesture_recognition():
     import cv2
+
+    global start_button_clicknum
+    print(start_button_clicknum)
+
     import mediapipe as mp
     import numpy as np
     from tensorflow.keras.models import load_model
+
     global dataset_function
     actions = dataset_function
+
     seq_length = 10
+
     model = load_model('models/model.h5')
+
     mp_hands = mp.solutions.hands
     mp_drawing = mp.solutions.drawing_utils
     hands = mp_hands.Hands(
@@ -323,6 +340,10 @@ def gesture_recognition():
     action_seq = []
 
     while cap.isOpened():
+        if (start_button_clicknum == 1):
+            cv2.destroyAllWindows()
+            return
+
         ret, img = cap.read()
         img0 = img.copy()
 
@@ -330,6 +351,7 @@ def gesture_recognition():
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         result = hands.process(img)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
         if result.multi_hand_landmarks is not None:
             for res in result.multi_hand_landmarks:
                 joint = np.zeros((21, 4))
@@ -379,14 +401,17 @@ def gesture_recognition():
                 if action_seq[-1] == action_seq[-2] == action_seq[-3]:
                     this_action = action
                     doFuction(this_action)
+
                 cv2.putText(img, f'{this_action.upper()}',
                             org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)),
                             fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
 
         winname = "img_"
         cv2.namedWindow(winname)  # create a named window
-        cv2.moveWindow(winname, 100, 200)  # Move it to (40, 30)
+        cv2.moveWindow(winname, 300, 10)  # Move it to (40, 30)
         cv2.imshow(winname, img)
+        if cv2.waitKey(1) == ord('q'):
+            break
 
 #수정중
 def trainModel():
@@ -454,26 +479,3 @@ def trainModel():
     y_pred = model.predict(x_val)
 
     multilabel_confusion_matrix(np.argmax(y_val, axis=1), np.argmax(y_pred, axis=1))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
