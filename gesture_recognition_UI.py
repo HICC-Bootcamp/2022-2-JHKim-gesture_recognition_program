@@ -14,8 +14,6 @@ NumofGesture = 2
 #나중에 추가할 때 저장하고자 하는 곳을 기억하는 변수
 add_id = 0
 
-dataset_name = list()
-dataset_func = list()
 
 #Gesture_recognition: 맨 처음 화면
 class Gesture_recognition(QMainWindow):
@@ -165,12 +163,15 @@ class ModifyUI(QMainWindow):
         super().__init__()
         loadUi("ui/ModifyUI.ui", self)
 
-        self.LoadDataset()
-
         self.nameList = [self.name_1, self.name_2, self.name_3, self.name_4, self.name_5, self.name_6, self.name_7, self.name_8]
         self.functionList = [self.comboBox_function_1, self.comboBox_function_2, self.comboBox_function_3, \
                              self.comboBox_function_4, self.comboBox_function_5, self.comboBox_function_6, \
                              self.comboBox_function_7, self.comboBox_function_8]
+
+        self.dataset_name = list()
+        self.dataset_func = list()
+
+        self.LoadDataset()
 
         self.plus_1.clicked.connect(lambda: self.plusButtonClicked(1))
         self.plus_2.clicked.connect(lambda: self.plusButtonClicked(2))
@@ -203,21 +204,18 @@ class ModifyUI(QMainWindow):
 
     def LoadDataset(self):
         ReadDatasetInformation()
-        global dataset_name
-        dataset_name = getDataset_name()
-
-        global dataset_func
-        dataset_func = getDataset_function()
+        self.dataset_name = getDataset_name()
+        self.dataset_func = getDataset_function()
 
         nameidx = 0
         funcidx = 0
 
-        for i in range(len(dataset_name)):
-            self.nameList[nameidx].setText(QCoreApplication.translate("", dataset_name[i]))
+        for i in range(len(self.dataset_name)):
+            self.nameList[nameidx].setText(QCoreApplication.translate("", self.dataset_name[i]))
             nameidx += 1
 
-        for j in range(len(dataset_func)):
-            self.functionList[funcidx].setCurrentText(dataset_func[j])
+        for j in range(len(self.dataset_func)):
+            self.functionList[funcidx].setCurrentText(self.dataset_func[j])
             funcidx += 1
 
 
