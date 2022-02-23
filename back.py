@@ -112,6 +112,9 @@ def getDataset_name():
 def getDataset_function():
     return dataset_function
 
+def getDataset_len():
+    return len(dataset_name)
+
 def getDataset_image():
     return dataset_image
 
