@@ -2,18 +2,15 @@ import sys
 from PyQt5.uic import loadUi
 
 from back import datasetIsEmpty, addInformation, confirmRepetition, deleteDatasetNameFunction, RecordGesture
-from back import getDataset_name, getDataset_function, getDataset_image
+from back import getDataset_name, getDataset_function, getDataset_len
 from back import ReadDatasetInformation, WriteDatasetInformation, gesture_recognition, stop_gesture, start_gesture
+from back import changeModel
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 #초기에 생성하는 제스처의 수
 NumofGesture = 2
-
-#나중에 추가할 때 저장하고자 하는 곳을 기억하는 변수
-add_id = 0
-
 
 #GestureRecognition: 맨 처음 화면
 class GestureRecognition(QMainWindow):
@@ -157,8 +154,6 @@ class Main_UI(QMainWindow):
             self.running = False
             stop_gesture()
 
-
-
     def editButtonClicked(self):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
@@ -169,15 +164,21 @@ class ModifyUI(QMainWindow):
         super().__init__()
         loadUi("ui/ModifyUI.ui", self)
 
+        #이름 입력하는 lineedit 리스트
         self.nameList = [self.name_1, self.name_2, self.name_3, self.name_4, self.name_5, self.name_6, self.name_7, self.name_8]
+        #기능 입력하는 콤보박스 리스트
         self.functionList = [self.comboBox_function_1, self.comboBox_function_2, self.comboBox_function_3, \
                              self.comboBox_function_4, self.comboBox_function_5, self.comboBox_function_6, \
                              self.comboBox_function_7, self.comboBox_function_8]
+        #추가 버튼 리스트
+        self.plusList = [self.plus_1, self.plus_2, self.plus_3, self.plus_4, self.plus_5, \
+                         self.plus_6, self.plus_7, self.plus_8, ]
 
         self.dataset_name = list()
         self.dataset_func = list()
 
-        self.LoadDataset()
+        #로드버튼을 누르면 정보가 갱신된다.
+        self.loadButton.clicked.connect(self.LoadDataset)
 
         self.plus_1.clicked.connect(lambda: self.plusButtonClicked(1))
         self.plus_2.clicked.connect(lambda: self.plusButtonClicked(2))
@@ -218,30 +219,43 @@ class ModifyUI(QMainWindow):
 
         for i in range(len(self.dataset_name)):
             self.nameList[nameidx].setText(QCoreApplication.translate("", self.dataset_name[i]))
+            self.plusList[nameidx].hide()
             nameidx += 1
 
         for j in range(len(self.dataset_func)):
             self.functionList[funcidx].setCurrentText(self.dataset_func[j])
             funcidx += 1
 
+        leftover = nameidx
 
+        #남은 것은 모두 빈칸으로 설정
+        for idx in range(leftover, 8):
+            self.nameList[nameidx].setText("")
+            self.functionList[funcidx].setCurrentText('---------')
+            self.plusList[nameidx].show()
+            nameidx += 1
+            funcidx += 1
+
+    #어디에 추가버튼을 눌러도 자동정렬이 되므로 id가 크게 의미는 없다.
     def plusButtonClicked(self, id):
-        global add_id
-        add_id = id - 1
         self.adddata_after = addDataset_after()
         self.adddata_after.show()
 
     def deleteButtonClicked(self, id):
         name = self.nameList[id-1].text()
         func = self.functionList[id-1].currentText()
-        print(name)
-        print(func)
+        deleteDatasetNameFunction(name, func)
+        WriteDatasetInformation()
+        self.nameList[id-1].setText(QCoreApplication.translate(name, ""))
+        self.functionList[id-1].setCurrentText('---------')
+        QMessageBox.information(self, '삭제 완료', '%s, %s 제스처가 삭제되었습니다.' % (name, func))
 
     def saveButtonClicked(self, id):
         name = self.nameList[id - 1].text()
         func = self.functionList[id - 1].currentText()
-        print(name)
-        print(func)
+        changeModel(id-1, name, func)
+        WriteDatasetInformation()
+        QMessageBox.information(self, '수정 완료', '%s, %s로 수정되었습니다.' % (name, func))
 
     # 데이터 셋 변동이 있으면 학습화면으로 아니면 메인 화면으로 간다.
     def okayButtonClicked(self):
@@ -261,9 +275,12 @@ class addDataset_after(QMainWindow):
     def okayButtonClicked(self):
         name = self.lineEdit_name.text()
         function = self.comboBox_function.currentText()
-        print(add_id)
-        print(name)
-        print(function)
+        add_id = getDataset_len()
+
+        addInformation(name, function)
+
+        #데이터셋 지우는 함수를 구현하면 실험해보기
+        RecordGesture(add_id-1, name)
         #영상 녹화 후 팝업 창 종료
         self.close()
 
