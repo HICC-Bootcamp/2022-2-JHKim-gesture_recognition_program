@@ -222,12 +222,12 @@ def RecordGesture(idx, name):
                         mp_drawing.draw_landmarks(img, res, mp_hands.HAND_CONNECTIONS)  # 랜드마크 그린다.
 
                 cv2.imshow('img', img)
-                #if cv2.waitKey(1) == ord('q'):
-                #   break
+                if cv2.waitKey(1) == ord('q'):
+                    break
 
             data = np.array(data)  # 데이터를 모았으면 numpy 배열로 변환
             print(action, data.shape)
-            np.save(os.path.join('dataset', f'raw_%d, %s_{created_time}' % (idx, name)), data)  # npy형식으로 파일 저장
+            np.save(os.path.join('dataset', f'raw_%d_%s_{created_time}' % (idx, name)), data)  # npy형식으로 파일 저장
 
             # Create sequence data
             full_seq_data = []
@@ -236,7 +236,7 @@ def RecordGesture(idx, name):
 
             full_seq_data = np.array(full_seq_data)
             print(action, full_seq_data.shape)
-            np.save(os.path.join('dataset', f'seq_%d, %s_{created_time}'% (idx, name)), full_seq_data)
+            np.save(os.path.join('dataset', f'seq_%d_%s_{created_time}' % (idx, name)), full_seq_data)
         break
 
     cv2.destroyAllWindows()
@@ -271,10 +271,10 @@ def ReadDatasetInformation():
         dataset_function = list
         print('dataset_function = ', dataset_function)
 
-        line = f.readline()
-        dataset_image = line.split(' ')
-        dataset_image.remove('')
-        print('dataset_image = ', dataset_image)
+        #line = f.readline()
+        #dataset_image = line.split(' ')
+        #dataset_image.remove('')
+        #print('dataset_image = ', dataset_image)
 
         f.close()
     else:
@@ -290,9 +290,9 @@ def WriteDatasetInformation():
         f.write(dataset_function[n])
         f.write(' ')
     f.write('\n')
-    for n in range(0, len(dataset_name)):
-        f.write(dataset_image[n])
-        f.write(' ')
+    #for n in range(0, len(dataset_name)):
+        #f.write(dataset_image[n])
+        #f.write(' ')
     f.close()
 
 def gesture_recognition():
@@ -301,7 +301,7 @@ def gesture_recognition():
     import numpy as np
     from tensorflow.keras.models import load_model
     global dataset_function
-    actions=dataset_function
+    actions = dataset_function
     seq_length = 10
     model = load_model('models/model.h5')
     mp_hands = mp.solutions.hands
@@ -382,9 +382,12 @@ def gesture_recognition():
                 cv2.putText(img, f'{this_action.upper()}',
                             org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)),
                             fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
-        cv2.imshow('img', img)
 
-#수정중
+        cv2.imshow('img', img)
+        if cv2.waitKey(1) == ord('q'):
+            break
+
+
 def trainModel():
     import numpy as np
     import os
@@ -393,11 +396,16 @@ def trainModel():
     os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     actions = dataset_name
 
-    data = np.concatenate([
-        np.load('dataset/seq_1_1642859961.npy'),
-        np.load('dataset/seq_2_1642859961.npy'),
-        np.load('dataset/seq_3_1642859961.npy')
-    ], axis=0)
+    #dataset에서 seq만 읽기
+    FileList = os.listdir('./dataset')
+    datasetName = []
+    for k in range(0, len(FileList)):
+        if 'seq_' in FileList[k]:
+            datasetName.append('./dataset/' + FileList[k])
+    print(datasetName)
+
+    for i in range(0, len(datasetName)):
+        data = np.concatenate([np.load(datasetName[i])], axis=0)
 
     data.shape
 
@@ -418,7 +426,7 @@ def trainModel():
 
     x_train, x_val, y_train, y_val = train_test_split(x_data, y_data, test_size=0.1, random_state=2021)
 
-    print(x_train.shape, y_train.shap)
+#    print(x_train.shape, y_train.shap)
     from tensorflow.keras.models import Sequential
     from tensorflow.keras.layers import LSTM, Dense
 
