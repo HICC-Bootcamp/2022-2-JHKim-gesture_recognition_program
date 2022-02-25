@@ -265,6 +265,10 @@ def changeModel(num, name, func):
     print(FileName)
     print(name,', ', func,'이 등록되었습니다.')
 
+def changeNameFunction(num, name,func):
+    dataset_name[num] = name
+    dataset_function[num] = func
+    print(dataset_name[num], ', ', dataset_function[num], '이 등록되었습니다.')
 
 def changeVidName(oldName,NewName):
     import os
