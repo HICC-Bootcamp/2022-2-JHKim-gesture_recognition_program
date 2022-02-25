@@ -413,17 +413,17 @@ def gesture_recognition():
                 i_pred = int(np.argmax(y_pred))
                 conf = y_pred[i_pred]
 
-                if conf < 0.99:
+                if conf < 0.9:
                     continue
 
                 action = actions[i_pred]
                 action_seq.append(action)
 
-                if len(action_seq) < 3:
+                if len(action_seq) < 5:
                     continue
 
                 this_action = '?'
-                if action_seq[-1] == action_seq[-2] == action_seq[-3]:
+                if action_seq[-1] == action_seq[-2] == action_seq[-3] == action_seq[-4] == action_seq[-5]:
                     this_action = action
                     doFuction(this_action)
                 cv2.putText(img, f'{this_action.upper()}',
@@ -441,7 +441,7 @@ def trainModel():
 
     os.environ['CUDA_VISIBLE_DEVICES'] = '1'
     os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
-    actions = dataset_name
+    actions = dataset_function
 
     #dataset에서 seq만 읽기
     FileList = os.listdir('./dataset')
@@ -473,7 +473,7 @@ def trainModel():
 
     x_train, x_val, y_train, y_val = train_test_split(x_data, y_data, test_size=0.1, random_state=2021)
 
-#    print(x_train.shape, y_train.shap)
+    #print(x_train.shape, y_train.shap)
     from tensorflow.keras.models import Sequential
     from tensorflow.keras.layers import LSTM, Dense
 
@@ -491,7 +491,7 @@ def trainModel():
         x_train,
         y_train,
         validation_data=(x_val, y_val),
-        epochs=50,
+        epochs=200,
         callbacks=[
             ModelCheckpoint('models/model.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
             ReduceLROnPlateau(monitor='val_acc', factor=0.5, patience=50, verbose=1, mode='auto')

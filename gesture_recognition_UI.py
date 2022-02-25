@@ -7,7 +7,12 @@ from back import ReadDatasetInformation, WriteDatasetInformation, gesture_recogn
 from back import changeModel, trainModel, find_max_seqnum, changeVidName, deleteVideo, countNumOfDataset
 
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+
+from time import sleep
+import threading
+import cv2
 
 #초기에 생성하는 제스처의 수
 NumofGesture = 2
