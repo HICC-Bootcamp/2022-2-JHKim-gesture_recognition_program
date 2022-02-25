@@ -27,6 +27,13 @@ def confirmRepetition():
             second=dataset_function[y]
             if first==second:
                 return 1
+    n = len(dataset_name)
+    for x in range(0, n):
+        first = dataset_function[x]
+        for y in range(x + 1, n):
+            second = dataset_function[y]
+            if first == second:
+                return 1
     return 0
 
 def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작업관리자, 가상화면생성, 가상화면닫기, 음량up/down/mute)
