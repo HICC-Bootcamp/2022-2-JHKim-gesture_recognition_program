@@ -1,7 +1,7 @@
 dataset_name=[] #dataset 이름
 dataset_function=[] #dataset 기능
 
-
+start_button_clicknum = 0
 
 def datasetIsEmpty(): #dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
     import os
@@ -366,6 +366,10 @@ def gesture_recognition():
     action_seq = []
 
     while cap.isOpened():
+        if start_button_clicknum == 1:
+            cv2.destroyAllWindows()
+            return
+
         ret, img = cap.read()
         img0 = img.copy()
 
@@ -375,8 +379,6 @@ def gesture_recognition():
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         if result.multi_hand_landmarks is not None:
             for res in result.multi_hand_landmarks:
-                if start_button_clicknum==0:
-                    return
                 joint = np.zeros((21, 4))
                 for j, lm in enumerate(res.landmark):
                     joint[j] = [lm.x, lm.y, lm.z, lm.visibility]
