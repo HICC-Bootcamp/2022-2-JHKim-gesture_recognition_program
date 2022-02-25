@@ -92,7 +92,7 @@ def countNumOfDataset():
     import os
     path = './dataset'
     length = len(os.listdir(path))/2
-    if (length >= 2):
+    if (length > 2):
         print('More than 2 datasets exist')
         return 1
     else:
@@ -517,4 +517,3 @@ def find_max_seqnum():
     print(dataset_num)
 
     return max(dataset_num)
-
