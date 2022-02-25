@@ -91,7 +91,7 @@ def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작
 def countNumOfDataset():
     import os
     path = './dataset'
-    length = len(os.listdir(path))
+    length = len(os.listdir(path))/2
     if (length >= 2):
         print('More than 2 datasets exist')
         return 1
