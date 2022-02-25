@@ -2,9 +2,9 @@ import sys
 from PyQt5.uic import loadUi
 
 from back import datasetIsEmpty, addInformation, confirmRepetition, deleteDatasetNameFunction, RecordGesture
-from back import getDataset_name, getDataset_function, getDataset_len
+from back import getDataset_name, getDataset_function, changeNameFunction
 from back import ReadDatasetInformation, WriteDatasetInformation, gesture_recognition, stop_gesture, start_gesture
-from back import changeModel
+from back import changeModel, trainModel, find_max_seqnum, changeVidName, deleteVideo, countNumOfDataset
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -70,10 +70,10 @@ class addDataset_UI(QMainWindow):
             # back.py에 이름과 기능 저장
             addInformation(name, function)
 
-            # 기능이 중복이라면 추가하지 않는다
+            # 이름, 기능이 중복이라면 추가하지 않는다
             if(confirmRepetition()):
-                deleteDatasetNameFunction(name, function)
-                QMessageBox.warning(self, "기능 중복 발생", "기능이 중복되었습니다. 다른 기능을 선택하세요.")
+                deleteDatasetNameFunction(name, function, True)
+                QMessageBox.warning(self, "이름, 기능 중복 발생", "이름 혹은 기능이 중복되었습니다.")
                 return
 
             RecordGesture(self.current, name)
@@ -105,28 +105,27 @@ class progressbar_UI(QMainWindow):
                                        "}\n"
                                        "\n"
                                        "")
+        #눌러야 학습시작
+        self.startLearning.clicked.connect(self.startLearningButtonClicked)
 
         #100%가 되기 전까지 확인버튼 비활성화
         self.okayButton.setEnabled(False)
 
-        self.timerVar = QTimer()
-        self.timerVar.setInterval(1000)
-        self.timerVar.timeout.connect(self.progressBarTimer)
-        self.timerVar.start()
-
         self.okayButton.clicked.connect(self.okayButtonClicked)
 
-    def progressBarTimer(self):
-        self.time = self.progressBar.value()
-        self.time += 10
-        self.progressBar.setValue(self.time)
+    def startLearningButtonClicked(self):
+        self.startLearning.setEnabled(False)
+        flag = trainModel()
 
-        if self.time >= self.progressBar.maximum():
-            self.timerVar.stop()
+        if flag:
+            self.progressBar.setValue(100)
             self.okayButton.setEnabled(True)
 
     # 확인버튼을 누르면 MainUI로 넘어간다.
     def okayButtonClicked(self):
+        self.progressBar.setValue(0)
+        self.startLearning.setEnabled(True)
+        self.okayButton.setEnabled(False)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
 
@@ -139,7 +138,7 @@ class Main_UI(QMainWindow):
         self.running = False
 
         self.start_button.clicked.connect(self.startButtonClicked)
-        self.edit_button.clicked.connect(self.editButtonClicked)
+        self.modify_button.clicked.connect(self.modifyButtonClicked)
 
     # opencv연동해서 아마도(test.py) 연동해서 실행해야 할 듯
     def startButtonClicked(self):
@@ -154,7 +153,7 @@ class Main_UI(QMainWindow):
             self.running = False
             stop_gesture()
 
-    def editButtonClicked(self):
+    def modifyButtonClicked(self):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
 
@@ -163,6 +162,8 @@ class ModifyUI(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi("ui/ModifyUI.ui", self)
+
+        self.isChange = False
 
         #이름 입력하는 lineedit 리스트
         self.nameList = [self.name_1, self.name_2, self.name_3, self.name_4, self.name_5, self.name_6, self.name_7, self.name_8]
@@ -240,27 +241,50 @@ class ModifyUI(QMainWindow):
     def plusButtonClicked(self, id):
         self.adddata_after = addDataset_after()
         self.adddata_after.show()
+        self.isChange = True
 
     def deleteButtonClicked(self, id):
         name = self.nameList[id-1].text()
         func = self.functionList[id-1].currentText()
-        deleteDatasetNameFunction(name, func)
-        WriteDatasetInformation()
-        self.nameList[id-1].setText(QCoreApplication.translate(name, ""))
-        self.functionList[id-1].setCurrentText('---------')
-        QMessageBox.information(self, '삭제 완료', '%s, %s 제스처가 삭제되었습니다.' % (name, func))
+
+        if countNumOfDataset():
+            deleteDatasetNameFunction(name, func, False)
+            deleteVideo(name)
+            WriteDatasetInformation()
+            self.nameList[id-1].setText(QCoreApplication.translate(name, ""))
+            self.functionList[id-1].setCurrentText('---------')
+            QMessageBox.information(self, '삭제 완료', '%s, %s 제스처가 삭제되었습니다.' % (name, func))
+            self.isChange = True
+        else:
+            QMessageBox.warning(self, "제스처 제거 불가", "최소한 두 개 이상의 제스처가 필요합니다.")
 
     def saveButtonClicked(self, id):
+        old_name = self.dataset_name[id - 1]
+        old_func = self.dataset_func[id - 1]
         name = self.nameList[id - 1].text()
         func = self.functionList[id - 1].currentText()
-        changeModel(id-1, name, func)
-        WriteDatasetInformation()
-        QMessageBox.information(self, '수정 완료', '%s, %s로 수정되었습니다.' % (name, func))
+        changeNameFunction(id-1, name, func)
+
+        if not confirmRepetition():
+            changeModel(id-1, old_name, name, func)
+            changeVidName(old_name, name)
+            WriteDatasetInformation()
+            QMessageBox.information(self, '수정 완료', '%s, %s로 수정되었습니다.' % (name, func))
+            #바뀐 내용으로 front의 dataset 최신화
+            self.dataset_name[id-1] = name
+            self.dataset_func[id-1] = func
+            self.isChange = True
+        else:
+            changeNameFunction(id-1, old_name, old_func)
+            QMessageBox.warning(self, "이름, 기능 중복 발생", "이름 혹은 기능이 중복되었습니다.")
+            self.nameList[id - 1].setText(old_name)
+            self.functionList[id - 1].setCurrentText(old_func)
 
     # 데이터 셋 변동이 있으면 학습화면으로 아니면 메인 화면으로 간다.
     def okayButtonClicked(self):
-        if(False):
-           widget.setCurrentIndex(widget.currentIndex() - 2)
+        if(self.isChange):
+            self.isChange = False
+            widget.setCurrentIndex(widget.currentIndex() - 2)
         else:
             widget.setCurrentIndex(widget.currentIndex() - 1)
 
@@ -275,12 +299,19 @@ class addDataset_after(QMainWindow):
     def okayButtonClicked(self):
         name = self.lineEdit_name.text()
         function = self.comboBox_function.currentText()
-        add_id = getDataset_len()
+        add_id = find_max_seqnum() + 1
 
         addInformation(name, function)
 
+        # 기능이 중복이라면 추가하지 않는다
+        if (confirmRepetition()):
+            deleteDatasetNameFunction(name, function, True)
+            QMessageBox.warning(self, "이름, 기능 중복 발생", "이름 혹은 기능이 중복되었습니다.")
+            return
+
         #데이터셋 지우는 함수를 구현하면 실험해보기
-        RecordGesture(add_id-1, name)
+        RecordGesture(add_id, name)
+        WriteDatasetInformation()
         #영상 녹화 후 팝업 창 종료
         self.close()
 

@@ -73,7 +73,7 @@ border-radius: 5px;
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QPushButton" name="edit_button">
+      <widget class="QPushButton" name="modify_button">
        <property name="maximumSize">
         <size>
          <width>500</width>

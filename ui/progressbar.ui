@@ -59,7 +59,7 @@ background-color: rgb(98, 114, 164);
 }</string>
     </property>
     <property name="value">
-     <number>20</number>
+     <number>0</number>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -80,9 +80,9 @@ background-color: rgb(98, 114, 164);
    <widget class="QPushButton" name="okayButton">
     <property name="geometry">
      <rect>
-      <x>1230</x>
+      <x>1090</x>
       <y>700</y>
-      <width>91</width>
+      <width>231</width>
       <height>81</height>
      </rect>
     </property>
@@ -97,6 +97,31 @@ background-color: rgb(98, 114, 164);
     </property>
     <property name="text">
      <string>확인</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="startLearning">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>700</y>
+      <width>231</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>맑은 고딕</family>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>학습 시작</string>
     </property>
     <property name="checkable">
      <bool>true</bool>
