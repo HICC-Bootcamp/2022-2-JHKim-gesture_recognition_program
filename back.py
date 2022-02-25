@@ -2,6 +2,7 @@ dataset_name=[] #dataset 이름
 dataset_function=[] #dataset 기능
 
 
+
 def datasetIsEmpty(): #dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
     import os
     path='./dataset'
@@ -248,6 +249,8 @@ def RecordGesture(idx, name):
 
 def changeModel(num, oldName, name, func):
 
+    global dataset_name
+    global dataset_function
     dataset_name[num]=name
     dataset_function[num]=func
     import os
@@ -259,10 +262,10 @@ def changeModel(num, oldName, name, func):
             File_name=FileName.split('_')
             File_name[2]=name
             FileName='_'.join(File_name)
-        file_newname_newfile = os.path.join("./dataset", FileName)
-
-    os.rename(file_oldname, file_newname_newfile)
-    print(FileName)
+            print(FileName)
+            file_newname_newfile = os.path.join('./dataset', FileName)
+            os.rename(file_oldname, file_newname_newfile)
+            print(FileName)
     print(name,', ', func,'이 등록되었습니다.')
 
 def changeNameFunction(num, name,func):
@@ -372,6 +375,8 @@ def gesture_recognition():
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         if result.multi_hand_landmarks is not None:
             for res in result.multi_hand_landmarks:
+                if start_button_clicknum==0:
+                    return
                 joint = np.zeros((21, 4))
                 for j, lm in enumerate(res.landmark):
                     joint[j] = [lm.x, lm.y, lm.z, lm.visibility]
@@ -499,6 +504,8 @@ def trainModel():
 
     multilabel_confusion_matrix(np.argmax(y_val, axis=1), np.argmax(y_pred, axis=1))
 
+    return True
+
 
 def start_gesture():
     global start_button_clicknum
@@ -531,3 +538,5 @@ def find_max_seqnum():
     print(dataset_num)
 
     return max(dataset_num)
+
+
