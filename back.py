@@ -29,9 +29,9 @@ def confirmRepetition():
                 return 1
     n = len(dataset_name)
     for x in range(0, n):
-        first = dataset_function[x]
+        first = dataset_name[x]
         for y in range(x + 1, n):
-            second = dataset_function[y]
+            second = dataset_name[y]
             if first == second:
                 return 1
     return 0
