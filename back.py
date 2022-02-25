@@ -95,7 +95,7 @@ def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작
         pyautogui.keyUp('win')
         pyautogui.keyUp('ctrl')'''
 
-def countNumOfDataset():.
+def countNumOfDataset():
     import os
     path = './dataset'
     length = len(os.listdir(path))/2
@@ -259,7 +259,7 @@ def changeModel(num, oldName, name, func):
             File_name=FileName.split('_')
             File_name[2]=name
             FileName='_'.join(File_name)
-    file_newname_newfile = os.path.join("./dataset", FileName)
+        file_newname_newfile = os.path.join("./dataset", FileName)
 
     os.rename(file_oldname, file_newname_newfile)
     print(FileName)
