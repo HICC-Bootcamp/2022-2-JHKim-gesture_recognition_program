@@ -1,6 +1,5 @@
 dataset_name=[] #dataset 이름
 dataset_function=[] #dataset 기능
-dataset_image=[] #영상 이름
 
 
 def datasetIsEmpty(): #dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
@@ -100,25 +99,22 @@ def countNumOfDataset():
         print('Less than 2 datasets exist')
         return 0
 
-def deleteGesture(name,function,dataset):
-    dataset_name.remove(name)
-    dataset_function.remove(function)
-    dataset_image.remove(dataset)
-
 def getDataset_name():
     return dataset_name
 
 def getDataset_function():
     return dataset_function
 
-def getDataset_image():
-    return dataset_image
-
-def deleteDatasetNameFunction(name,func):
+def deleteDatasetNameFunction(name,func,rep):
     dataset_name.remove(name)
     dataset_function.remove(func)
+    if rep==False:
+        import os
+        FileList = os.listdir('./dataset')
+        for i in range(0, len(FileList)):
+            if name in FileList[i]:
+                os.remove('./dataset/'+FileList[i])
 
-#def trainModel():
 
 
 def RecordGesture(idx, name):
@@ -242,15 +238,45 @@ def RecordGesture(idx, name):
     cv2.destroyAllWindows()
 
 
-#백에서 사용 예정임
-def addDataset_image(image):
-    dataset_image.append(image)
-    print('dataset_image =', dataset_image)
-
 def changeModel(num, name, func):
+    oldName=dataset_name[num]
     dataset_name[num]=name
     dataset_function[num]=func
+    import os
+    FileList = os.listdir('./dataset')
+    for i in range(0,len(FileList)):
+        if oldName in FileList[i]:
+            FileName = FileList[i]
+            file_oldname = os.path.join('./dataset', FileName)
+            File_name=FileName.split('_')
+            File_name[2]=name
+            FileName='_'.join(File_name)
+    file_newname_newfile = os.path.join("./dataset", FileName)
+
+    os.rename(file_oldname, file_newname_newfile)
+    print(FileName)
     print(name,', ', func,'이 등록되었습니다.')
+
+
+def changeVidName(oldName,NewName):
+    import os
+    FileList = os.listdir()
+    for i in range(len(FileList)):
+        if oldName in FileList[i]:
+            file_oldname = os.path.join('', FileList[i])
+            file_newname_newfile = os.path.join("", NewName+'.mp4')
+            os.rename(file_oldname, file_newname_newfile)
+            print(file_oldname,'이 ',file_newname_newfile,'로 변경되었습니다.')
+
+def deleteVideo(name):
+    import os
+    FileList = os.listdir()
+    for i in range(len(FileList)):
+        if name+'.mp4' in FileList[i]:
+            os.remove(FileList[i])
+            print(FileList[i],'가 삭제 되었습니다.')
+
+
 
 def ReadDatasetInformation():
     import os
@@ -469,6 +495,3 @@ def stop_gesture():
     global start_button_clicknum
     start_button_clicknum = 1
 
-
-def getDataset_len():
-    return len(dataset_name)
