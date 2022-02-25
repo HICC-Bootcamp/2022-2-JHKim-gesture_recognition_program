@@ -145,12 +145,12 @@ class Main_UI(QMainWindow):
         self.start_button.clicked.connect(self.startButtonClicked)
         self.modify_button.clicked.connect(self.modifyButtonClicked)
 
-    # opencv연동해서 아마도(test.py) 연동해서 실행해야 할 듯
     def startButtonClicked(self):
         if(self.running == False):
             self.start_button.setText('중지')
             self.running = True
             start_gesture()
+            ReadDatasetInformation()
             gesture_recognition()
 
         else:
