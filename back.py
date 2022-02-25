@@ -95,7 +95,7 @@ def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작
         pyautogui.keyUp('win')
         pyautogui.keyUp('ctrl')'''
 
-def countNumOfDataset():
+def countNumOfDataset():.
     import os
     path = './dataset'
     length = len(os.listdir(path))/2
@@ -246,8 +246,8 @@ def RecordGesture(idx, name):
     cv2.destroyAllWindows()
 
 
-def changeModel(num, name, func):
-    oldName=dataset_name[num]
+def changeModel(num, oldName, name, func):
+
     dataset_name[num]=name
     dataset_function[num]=func
     import os
