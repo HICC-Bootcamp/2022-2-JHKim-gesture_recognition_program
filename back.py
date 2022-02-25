@@ -495,3 +495,26 @@ def stop_gesture():
     global start_button_clicknum
     start_button_clicknum = 1
 
+
+def find_max_seqnum():
+    import os
+    FileList = os.listdir('./dataset')
+    datasetName = []
+    dataset_split = []
+    for k in range(0, len(FileList)):
+        if 'seq_' in FileList[k]:
+            datasetName.append(FileList[k])
+
+    for l in range(len(datasetName)):
+        dataset_split.append(datasetName[l].split('_'))
+
+    print(dataset_split)
+
+    dataset_num = []
+    for seq, num, name, npy in dataset_split:
+        dataset_num.append(int(num))
+
+    print(dataset_num)
+
+    return max(dataset_num)
+
