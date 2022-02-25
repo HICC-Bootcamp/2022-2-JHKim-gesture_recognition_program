@@ -112,8 +112,6 @@ def getDataset_name():
 def getDataset_function():
     return dataset_function
 
-def getDataset_len():
-    return len(dataset_name)
 
 def getDataset_image():
     return dataset_image
@@ -299,13 +297,7 @@ def WriteDatasetInformation():
         #f.write(' ')
     f.close()
 
-def start_gesture():
-    global start_button_clicknum
-    start_button_clicknum = 0
 
-def stop_gesture():
-    global start_button_clicknum
-    start_button_clicknum = 1
 
 def gesture_recognition():
     import cv2
