@@ -2,7 +2,6 @@ dataset_name=[] #dataset 이름
 dataset_function=[] #dataset 기능
 dataset_image=[] #영상 이름
 
-start_button_clicknum = 0
 
 def datasetIsEmpty(): #dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
     import os
@@ -111,7 +110,6 @@ def getDataset_name():
 
 def getDataset_function():
     return dataset_function
-
 
 def getDataset_image():
     return dataset_image
@@ -297,25 +295,15 @@ def WriteDatasetInformation():
         #f.write(' ')
     f.close()
 
-
-
 def gesture_recognition():
     import cv2
-
-    global start_button_clicknum
-    print(start_button_clicknum)
-
     import mediapipe as mp
     import numpy as np
     from tensorflow.keras.models import load_model
-
     global dataset_function
     actions = dataset_function
-
     seq_length = 10
-
     model = load_model('models/model.h5')
-
     mp_hands = mp.solutions.hands
     mp_drawing = mp.solutions.drawing_utils
     hands = mp_hands.Hands(
@@ -335,10 +323,6 @@ def gesture_recognition():
     action_seq = []
 
     while cap.isOpened():
-        if (start_button_clicknum == 1):
-            cv2.destroyAllWindows()
-            return
-
         ret, img = cap.read()
         img0 = img.copy()
 
@@ -346,7 +330,6 @@ def gesture_recognition():
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         result = hands.process(img)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-
         if result.multi_hand_landmarks is not None:
             for res in result.multi_hand_landmarks:
                 joint = np.zeros((21, 4))
@@ -396,19 +379,15 @@ def gesture_recognition():
                 if action_seq[-1] == action_seq[-2] == action_seq[-3]:
                     this_action = action
                     doFuction(this_action)
-
                 cv2.putText(img, f'{this_action.upper()}',
                             org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)),
                             fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
 
-        winname = "img_"
-        cv2.namedWindow(winname)  # create a named window
-        cv2.moveWindow(winname, 300, 10)  # Move it to (40, 30)
-        cv2.imshow(winname, img)
+        cv2.imshow('img', img)
         if cv2.waitKey(1) == ord('q'):
             break
 
-#수정중
+
 def trainModel():
     import numpy as np
     import os
@@ -417,11 +396,16 @@ def trainModel():
     os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     actions = dataset_name
 
-    data = np.concatenate([
-        np.load('dataset/seq_1_1642859961.npy'),
-        np.load('dataset/seq_2_1642859961.npy'),
-        np.load('dataset/seq_3_1642859961.npy')
-    ], axis=0)
+    #dataset에서 seq만 읽기
+    FileList = os.listdir('./dataset')
+    datasetName = []
+    for k in range(0, len(FileList)):
+        if 'seq_' in FileList[k]:
+            datasetName.append('./dataset/' + FileList[k])
+    print(datasetName)
+
+    for i in range(0, len(datasetName)):
+        data = np.concatenate([np.load(datasetName[i])], axis=0)
 
     data.shape
 
@@ -442,7 +426,7 @@ def trainModel():
 
     x_train, x_val, y_train, y_val = train_test_split(x_data, y_data, test_size=0.1, random_state=2021)
 
-    print(x_train.shape, y_train.shap)
+#    print(x_train.shape, y_train.shap)
     from tensorflow.keras.models import Sequential
     from tensorflow.keras.layers import LSTM, Dense
 
@@ -474,3 +458,39 @@ def trainModel():
     y_pred = model.predict(x_val)
 
     multilabel_confusion_matrix(np.argmax(y_val, axis=1), np.argmax(y_pred, axis=1))
+
+
+def start_gesture():
+    global start_button_clicknum
+    start_button_clicknum = 0
+
+
+def stop_gesture():
+    global start_button_clicknum
+    start_button_clicknum = 1
+
+
+def getDataset_len():
+    return len(dataset_name)
+
+def find_max_seqnum():
+    import os
+    FileList = os.listdir('./dataset')
+    datasetName = []
+    dataset_split = []
+    for k in range(0, len(FileList)):
+        if 'seq_' in FileList[k]:
+            datasetName.append(FileList[k])
+
+    for l in range(len(datasetName)):
+        dataset_split.append(datasetName[l].split('_'))
+
+    print(dataset_split)
+
+    dataset_num = []
+    for seq, num, name, npy in dataset_split:
+        dataset_num.append(int(num))
+
+    print(dataset_num)
+
+    return max(dataset_num)
