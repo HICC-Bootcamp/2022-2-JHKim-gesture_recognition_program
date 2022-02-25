@@ -121,6 +121,7 @@ def deleteDatasetNameFunction(name,func,rep):
         for i in range(0, len(FileList)):
             if name in FileList[i]:
                 os.remove('./dataset/'+FileList[i])
+                break
 
 
 
@@ -274,6 +275,7 @@ def changeVidName(oldName,NewName):
             file_newname_newfile = os.path.join("", NewName+'.mp4')
             os.rename(file_oldname, file_newname_newfile)
             print(file_oldname,'이 ',file_newname_newfile,'로 변경되었습니다.')
+            break
 
 def deleteVideo(name):
     import os
@@ -282,6 +284,7 @@ def deleteVideo(name):
         if name+'.mp4' in FileList[i]:
             os.remove(FileList[i])
             print(FileList[i],'가 삭제 되었습니다.')
+            break
 
 
 
