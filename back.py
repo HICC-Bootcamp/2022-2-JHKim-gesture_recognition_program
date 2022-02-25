@@ -460,24 +460,15 @@ def trainModel():
     multilabel_confusion_matrix(np.argmax(y_val, axis=1), np.argmax(y_pred, axis=1))
 
 
+def start_gesture():
+    global start_button_clicknum
+    start_button_clicknum = 0
 
 
+def stop_gesture():
+    global start_button_clicknum
+    start_button_clicknum = 1
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def getDataset_len():
+    return len(dataset_name)
