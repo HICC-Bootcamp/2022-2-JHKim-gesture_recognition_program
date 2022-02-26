@@ -72,22 +72,12 @@ border-radius: 5px;
        </item>
        <item>
         <property name="text">
-         <string>특정화면캡처</string>
+         <string>특정화면캡쳐</string>
         </property>
        </item>
        <item>
         <property name="text">
          <string>작업관리자</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>가상화면생성</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>가상화면닫기</string>
         </property>
        </item>
        <item>
@@ -103,6 +93,21 @@ border-radius: 5px;
        <item>
         <property name="text">
          <string>음소거</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>위로스크롤</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>아래로스크롤</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>닫은탭되돌리기</string>
         </property>
        </item>
       </widget>
