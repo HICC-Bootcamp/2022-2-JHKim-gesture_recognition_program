@@ -2,22 +2,28 @@
 
 
 
-### 1. 프로그램 소개
+### 1. Introduce
 
-사용자가 특정 동작을 컴퓨터에 학습시켜
+사용자가 특정 동작을 컴퓨터에 학습시켜 특정 동작을 수행할 때 유용한 특정 기능을 실행하는 프로그램
 
-특정 동작을 수행할 때 유용한 특정 기능을 실행하는 프로그램
-
-동작을 학습시키기 위해 LSTM사용
+동작을 학습시키기 위해 LSTM을 사용한다. 
 
 
 
-### 2. 개발 환경
+A User trains some specific actions to computer so this program can activate useful specific functions when a user executes some actions.
+
+We use LSTM(Long Short-Term Memory) for this program.
+
+
+
+### 2. Development Environment
 
 + Win 10 64bit
 + IDE : Pycharm
 + Python 3.7
 + Anaconda 4.11.0
+
+
 
 
 
@@ -38,7 +44,9 @@
 
 
 
-### 4. 참고자료
+
+
+### 4. Reference
 
 + https://www.youtube.com/watch?v=eHxDWhtbRCk
 + https://github.com/kairess/gesture-recognition
