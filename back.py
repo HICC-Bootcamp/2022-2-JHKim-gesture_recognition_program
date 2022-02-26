@@ -367,7 +367,9 @@ def gesture_recognition():
 
     seq = []
     action_seq = []
-    before_action='?'
+    #before_action='?'
+    this_action=[]
+    this_action.append('?')
 
     while cap.isOpened():
         if start_button_clicknum == 1:
@@ -426,19 +428,19 @@ def gesture_recognition():
                 if len(action_seq) < 5:
                     continue
 
-                this_action = '?'
                 if action_seq[-1] == action_seq[-2] == action_seq[-3] == action_seq[-4] == action_seq[-5]:
-                    this_action = action
+                    this_action.append(action)
                     print(this_action)
-                    if before_action==this_action:
-                        doFuction(this_action)
-                        action_seq.clear()
-                        time.sleep(0.5)
-                    before_action=this_action
+                    if len(this_action)>3:
+                        if this_action[-1]==this_action[-2]==this_action[-3]:
+                            doFuction(this_action[-1])
+                            action_seq.clear()
 
-                cv2.putText(img, f'{this_action.upper()}',
-                            org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)),
-                            fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
+
+                            cv2.putText(img, f'{this_action[-1].upper()}',
+                                     org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)),
+                                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
+                            time.sleep(0.5)
 
         cv2.imshow('img', img)
         if cv2.waitKey(1) == ord('q'):
@@ -505,7 +507,7 @@ def trainModel():
         x_train,
         y_train,
         validation_data=(x_val, y_val),
-        epochs=200,
+        epochs=50,
         callbacks=[
             ModelCheckpoint('models/model.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
             ReduceLROnPlateau(monitor='val_acc', factor=0.5, patience=50, verbose=1, mode='auto')
