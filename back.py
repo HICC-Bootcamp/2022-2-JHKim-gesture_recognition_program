@@ -37,7 +37,7 @@ def confirmRepetition():
                 return 1
     return 0
 
-def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작업관리자, 가상화면생성, 가상화면닫기, 음량up/down/mute)
+def doFunction(function): #function 동작 ('바탕화면', '특정화면캡쳐','작업관리자', '볼륨up/down','음소거','위로스크롤','아래로스크롤','닫은탭되돌리기')
     import pyautogui
     
     if function=='바탕화면':
@@ -80,6 +80,19 @@ def doFuction(function): #function 동작 (바탕화면, 특정화면캡쳐, 작
             volume.SetMute(0, None)
         else:
             volume.SetMute(1, None)
+    elif function=='위로스크롤':
+        import pyautogui
+        pyautogui.scroll(500)
+    elif function=='아래로스크롤':
+        import pyautogui
+        pyautogui.scroll(-500)
+    elif function=='닫은탭되돌리기':
+        import pyautogui
+        pyautogui.keyDown('ctrl')
+        pyautogui.keyDown('shift')
+        pyautogui.press('t')
+        pyautogui.keyUp('ctrl')
+        pyautogui.keyUp('shift')
     else:
         pass
 
@@ -433,7 +446,7 @@ def gesture_recognition():
                     print(this_action)
                     if len(this_action)>3:
                         if this_action[-1]==this_action[-2]==this_action[-3]:
-                            doFuction(this_action[-1])
+                            doFunction(this_action[-1])
                             action_seq.clear()
 
 
