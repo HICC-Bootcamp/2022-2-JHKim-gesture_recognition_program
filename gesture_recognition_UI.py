@@ -7,12 +7,7 @@ from back import ReadDatasetInformation, WriteDatasetInformation, gesture_recogn
 from back import changeModel, trainModel, find_max_seqnum, changeVidName, deleteVideo, countNumOfDataset
 
 from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-
-from time import sleep
-import threading
-import cv2
 
 #초기에 생성하는 제스처의 수
 NumofGesture = 2
@@ -81,7 +76,7 @@ class addDataset_UI(QMainWindow):
                 QMessageBox.warning(self, "이름, 기능 중복 발생", "이름 혹은 기능이 중복되었습니다.")
                 return
 
-            RecordGesture(self.current, name)
+            RecordGesture(self.current, name, function)
             self.current += 1
 
 
@@ -119,6 +114,7 @@ class progressbar_UI(QMainWindow):
         self.okayButton.clicked.connect(self.okayButtonClicked)
 
     def startLearningButtonClicked(self):
+        ReadDatasetInformation()
         self.startLearning.setEnabled(False)
         flag = trainModel()
 
@@ -180,11 +176,26 @@ class ModifyUI(QMainWindow):
         self.plusList = [self.plus_1, self.plus_2, self.plus_3, self.plus_4, self.plus_5, \
                          self.plus_6, self.plus_7, self.plus_8, ]
 
+        #영상 재생버튼 리스트
+        self.playList = [self.play_1, self.play_2, self.play_3, self.play_4, self.play_5, \
+                         self.play_6, self.play_7, self.play_8]
+
         self.dataset_name = list()
         self.dataset_func = list()
+        self.videoList = list()
 
         #로드버튼을 누르면 정보가 갱신된다.
         self.loadButton.clicked.connect(self.LoadDataset)
+
+        #재생버튼을 누르면 영상이 재생된다.
+        self.play_1.clicked.connect(lambda: self.play(1))
+        self.play_2.clicked.connect(lambda: self.play(2))
+        self.play_3.clicked.connect(lambda: self.play(3))
+        self.play_4.clicked.connect(lambda: self.play(4))
+        self.play_5.clicked.connect(lambda: self.play(5))
+        self.play_6.clicked.connect(lambda: self.play(6))
+        self.play_7.clicked.connect(lambda: self.play(7))
+        self.play_8.clicked.connect(lambda: self.play(8))
 
         self.plus_1.clicked.connect(lambda: self.plusButtonClicked(1))
         self.plus_2.clicked.connect(lambda: self.plusButtonClicked(2))
@@ -226,6 +237,7 @@ class ModifyUI(QMainWindow):
         for i in range(len(self.dataset_name)):
             self.nameList[nameidx].setText(QCoreApplication.translate("", self.dataset_name[i]))
             self.plusList[nameidx].hide()
+            self.playList[nameidx].show()
             nameidx += 1
 
         for j in range(len(self.dataset_func)):
@@ -239,8 +251,33 @@ class ModifyUI(QMainWindow):
             self.nameList[nameidx].setText("")
             self.functionList[funcidx].setCurrentText('---------')
             self.plusList[nameidx].show()
+            self.playList[nameidx].hide()
             nameidx += 1
             funcidx += 1
+
+    def play(self, id):
+        import cv2
+
+        videoName = self.dataset_name[id-1]
+
+        # 재생할 동영상 파일
+        cap = cv2.VideoCapture(videoName+'.mp4')
+        fourcc = cv2.VideoWriter_fourcc(* 'XVID')
+
+        while True:
+            ret, img_color = cap.read()
+
+            if ret == False:
+                break
+
+            cv2.imshow(videoName, img_color)
+
+            if cv2.waitKey(5)&0xFF == 27:
+                break
+
+        cap.release()
+        cv2.destroyAllWindows()
+
 
     #어디에 추가버튼을 눌러도 자동정렬이 되므로 id가 크게 의미는 없다.
     def plusButtonClicked(self, id):
@@ -315,7 +352,7 @@ class addDataset_after(QMainWindow):
             return
 
         #데이터셋 지우는 함수를 구현하면 실험해보기
-        RecordGesture(add_id, name)
+        RecordGesture(add_id, name, function)
         WriteDatasetInformation()
         #영상 녹화 후 팝업 창 종료
         self.close()
