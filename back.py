@@ -140,7 +140,7 @@ def RecordGesture(idx, name, func):
 
     actions = [func]
     seq_length = 10  # 10으로 변경
-    secs_for_action = 10  # 10으로 변경
+    secs_for_action = 30  # 10으로 변경
 
     # mediapipe initialize
     mp_hands = mp.solutions.hands
@@ -343,6 +343,9 @@ def gesture_recognition():
     import mediapipe as mp
     import numpy as np
     from tensorflow.keras.models import load_model
+    import time
+
+
     global dataset_function
     actions = dataset_function
     seq_length = 10
@@ -364,6 +367,7 @@ def gesture_recognition():
 
     seq = []
     action_seq = []
+    before_action='?'
 
     while cap.isOpened():
         if start_button_clicknum == 1:
@@ -426,8 +430,12 @@ def gesture_recognition():
                 if action_seq[-1] == action_seq[-2] == action_seq[-3] == action_seq[-4] == action_seq[-5]:
                     this_action = action
                     print(this_action)
-                    action_seq.clear()
-                    doFuction(this_action)
+                    if before_action==this_action:
+                        doFuction(this_action)
+                        action_seq.clear()
+                        time.sleep(0.5)
+                    before_action=this_action
+
                 cv2.putText(img, f'{this_action.upper()}',
                             org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)),
                             fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
