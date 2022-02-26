@@ -5,6 +5,7 @@ start_button_clicknum = 0
 
 def datasetIsEmpty(): #dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
     import os
+    os.makedirs('dataset', exist_ok=True)
     path='./dataset'
     length=len(os.listdir(path))
     if (length>0):
