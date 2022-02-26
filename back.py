@@ -1,33 +1,36 @@
-dataset_name=[] #dataset 이름
-dataset_function=[] #dataset 기능
+dataset_name = []  # dataset 이름
+dataset_function = []  # dataset 기능
 
 start_button_clicknum = 0
 
-def datasetIsEmpty(): #dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
+
+def datasetIsEmpty():  # dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
     import os
     os.makedirs('dataset', exist_ok=True)
-    path='./dataset'
-    length=len(os.listdir(path))
-    if (length>0):
+    path = './dataset'
+    length = len(os.listdir(path))
+    if (length > 0):
         print('dataset is not empty')
         return 0
     else:
         print('dataset is empty')
         return 1
 
-def addInformation(name, function): #이름과 기능을 리스트에 저장하는 함수
+
+def addInformation(name, function):  # 이름과 기능을 리스트에 저장하는 함수
     dataset_name.append(name)
     dataset_function.append(function)
-    print('dataset_name =',dataset_name)
-    print('dataset_function =',dataset_function)
+    print('dataset_name =', dataset_name)
+    print('dataset_function =', dataset_function)
+
 
 def confirmRepetition():
-    n=len(dataset_function)
-    for x in range(0,n):
-        first=dataset_function[x]
-        for y in range(x+1,n):
-            second=dataset_function[y]
-            if first==second:
+    n = len(dataset_function)
+    for x in range(0, n):
+        first = dataset_function[x]
+        for y in range(x + 1, n):
+            second = dataset_function[y]
+            if first == second:
                 return 1
     n = len(dataset_name)
     for x in range(0, n):
@@ -38,38 +41,39 @@ def confirmRepetition():
                 return 1
     return 0
 
-def doFunction(function): #function 동작 ('바탕화면', '특정화면캡쳐','작업관리자', '볼륨up/down','음소거','위로스크롤','아래로스크롤','닫은탭되돌리기')
+
+def doFunction(function):  # function 동작 ('바탕화면', '특정화면캡쳐','작업관리자', '볼륨up/down','음소거','위로스크롤','아래로스크롤','닫은탭되돌리기')
     import pyautogui
-    
-    if function=='바탕화면':
+
+    if function == '바탕화면':
         pyautogui.keyDown('win')
         pyautogui.press('d')
         pyautogui.keyUp('win')
-    elif function=='특정화면캡쳐':
+    elif function == '특정화면캡쳐':
         pyautogui.keyDown('win')
         pyautogui.keyDown('shift')
         pyautogui.press('s')
         pyautogui.keyUp('win')
         pyautogui.keyUp('shift')
-    elif function=='작업관리자':
+    elif function == '작업관리자':
         pyautogui.keyDown('ctrl')
         pyautogui.keyDown('shift')
         pyautogui.press('esc')
         pyautogui.keyUp('ctrl')
         pyautogui.keyUp('shift')
-    elif function=='볼륨up':
+    elif function == '볼륨up':
         from pynput.keyboard import Key, Controller
         keyboard = Controller()
         for i in range(5):
             keyboard.press(Key.media_volume_up)
             keyboard.release(Key.media_volume_up)
-    elif function=='볼륨down':
+    elif function == '볼륨down':
         from pynput.keyboard import Key, Controller
         keyboard = Controller()
         for i in range(5):
             keyboard.press(Key.media_volume_down)
             keyboard.release(Key.media_volume_down)
-    elif function=='음소거':
+    elif function == '음소거':
         from ctypes import cast, POINTER
         from comtypes import CLSCTX_ALL
         from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
@@ -81,13 +85,13 @@ def doFunction(function): #function 동작 ('바탕화면', '특정화면캡쳐'
             volume.SetMute(0, None)
         else:
             volume.SetMute(1, None)
-    elif function=='위로스크롤':
+    elif function == '위로스크롤':
         import pyautogui
         pyautogui.scroll(500)
-    elif function=='아래로스크롤':
+    elif function == '아래로스크롤':
         import pyautogui
         pyautogui.scroll(-500)
-    elif function=='닫은탭되돌리기':
+    elif function == '닫은탭되돌리기':
         import pyautogui
         pyautogui.keyDown('ctrl')
         pyautogui.keyDown('shift')
@@ -110,10 +114,11 @@ def doFunction(function): #function 동작 ('바탕화면', '특정화면캡쳐'
         pyautogui.keyUp('win')
         pyautogui.keyUp('ctrl')'''
 
+
 def countNumOfDataset():
     import os
     path = './dataset'
-    length = len(os.listdir(path))/2
+    length = len(os.listdir(path)) / 2
     if (length > 2):
         print('More than 2 datasets exist')
         return 1
@@ -121,23 +126,24 @@ def countNumOfDataset():
         print('Less than 2 datasets exist')
         return 0
 
+
 def getDataset_name():
     return dataset_name
+
 
 def getDataset_function():
     return dataset_function
 
-def deleteDatasetNameFunction(name,func,rep):
+
+def deleteDatasetNameFunction(name, func, rep):
     dataset_name.remove(name)
     dataset_function.remove(func)
-    if rep==False:
+    if rep == False:
         import os
         FileList = os.listdir('./dataset')
         for i in range(0, len(FileList)):
             if name in FileList[i]:
-                os.remove('./dataset/'+FileList[i])
-                break
-
+                os.remove('./dataset/' + FileList[i])
 
 
 def RecordGesture(idx, name, func):
@@ -262,51 +268,52 @@ def RecordGesture(idx, name, func):
 
 
 def changeModel(num, oldName, name, func):
-
     global dataset_name
     global dataset_function
-    dataset_name[num]=name
-    dataset_function[num]=func
+    dataset_name[num] = name
+    dataset_function[num] = func
     import os
     FileList = os.listdir('./dataset')
-    for i in range(0,len(FileList)):
+    for i in range(0, len(FileList)):
         if oldName in FileList[i]:
             FileName = FileList[i]
             file_oldname = os.path.join('./dataset', FileName)
-            File_name=FileName.split('_')
-            File_name[2]=name
-            FileName='_'.join(File_name)
+            File_name = FileName.split('_')
+            File_name[2] = name
+            FileName = '_'.join(File_name)
             print(FileName)
             file_newname_newfile = os.path.join('./dataset', FileName)
             os.rename(file_oldname, file_newname_newfile)
             print(FileName)
-    print(name,', ', func,'이 등록되었습니다.')
+    print(name, ', ', func, '이 등록되었습니다.')
 
-def changeNameFunction(num, name,func):
+
+def changeNameFunction(num, name, func):
     dataset_name[num] = name
     dataset_function[num] = func
     print(dataset_name[num], ', ', dataset_function[num], '이 등록되었습니다.')
 
-def changeVidName(oldName,NewName):
+
+def changeVidName(oldName, NewName):
     import os
     FileList = os.listdir()
     for i in range(len(FileList)):
         if oldName in FileList[i]:
             file_oldname = os.path.join('', FileList[i])
-            file_newname_newfile = os.path.join("", NewName+'.mp4')
+            file_newname_newfile = os.path.join("", NewName + '.mp4')
             os.rename(file_oldname, file_newname_newfile)
-            print(file_oldname,'이 ',file_newname_newfile,'로 변경되었습니다.')
+            print(file_oldname, '이 ', file_newname_newfile, '로 변경되었습니다.')
             break
+
 
 def deleteVideo(name):
     import os
     FileList = os.listdir()
     for i in range(len(FileList)):
-        if name+'.mp4' in FileList[i]:
+        if name + '.mp4' in FileList[i]:
             os.remove(FileList[i])
-            print(FileList[i],'가 삭제 되었습니다.')
+            print(FileList[i], '가 삭제 되었습니다.')
             break
-
 
 
 def ReadDatasetInformation():
@@ -315,11 +322,11 @@ def ReadDatasetInformation():
         print('Dataset 정보 파일 존재')
         f = open("datasetInformation.txt", "r")
         line = f.readline()
-        list=line.split(' ')
+        list = line.split(' ')
         list.remove('\n')
         global dataset_name
-        dataset_name=list
-        print('dataset_name = ',dataset_name)
+        dataset_name = list
+        print('dataset_name = ', dataset_name)
 
         line = f.readline()
         list = line.split(' ')
@@ -328,14 +335,15 @@ def ReadDatasetInformation():
         dataset_function = list
         print('dataset_function = ', dataset_function)
 
-        #line = f.readline()
-        #dataset_image = line.split(' ')
-        #dataset_image.remove('')
-        #print('dataset_image = ', dataset_image)
+        # line = f.readline()
+        # dataset_image = line.split(' ')
+        # dataset_image.remove('')
+        # print('dataset_image = ', dataset_image)
 
         f.close()
     else:
         print("Dataset 정보 파일 존재X")
+
 
 def WriteDatasetInformation():
     f = open("datasetInformation.txt", "w")
@@ -347,10 +355,11 @@ def WriteDatasetInformation():
         f.write(dataset_function[n])
         f.write(' ')
     f.write('\n')
-    #for n in range(0, len(dataset_name)):
-        #f.write(dataset_image[n])
-        #f.write(' ')
+    # for n in range(0, len(dataset_name)):
+    # f.write(dataset_image[n])
+    # f.write(' ')
     f.close()
+
 
 def gesture_recognition():
     import cv2
@@ -358,7 +367,6 @@ def gesture_recognition():
     import numpy as np
     from tensorflow.keras.models import load_model
     import time
-
 
     global dataset_function
     actions = dataset_function
@@ -381,8 +389,8 @@ def gesture_recognition():
 
     seq = []
     action_seq = []
-    #before_action='?'
-    this_action=[]
+    # before_action='?'
+    this_action = []
     this_action.append('?')
 
     while cap.isOpened():
@@ -445,15 +453,16 @@ def gesture_recognition():
                 if action_seq[-1] == action_seq[-2] == action_seq[-3] == action_seq[-4] == action_seq[-5]:
                     this_action.append(action)
                     print(this_action)
-                    if len(this_action)>3:
-                        if this_action[-1]==this_action[-2]==this_action[-3]:
+                    if len(this_action) > 3:
+                        if this_action[-1] == this_action[-2] == this_action[-3]:
                             doFunction(this_action[-1])
                             action_seq.clear()
 
-
                             cv2.putText(img, f'{this_action[-1].upper()}',
-                                     org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)),
-                                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
+                                        org=(int(res.landmark[0].x * img.shape[1]),
+                                             int(res.landmark[0].y * img.shape[0] + 20)),
+                                        fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255),
+                                        thickness=2)
                             time.sleep(0.5)
 
         cv2.imshow('img', img)
@@ -469,7 +478,7 @@ def trainModel():
     os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     actions = dataset_function
 
-    #dataset에서 seq만 읽기
+    # dataset에서 seq만 읽기
     FileList = os.listdir('./dataset')
     datasetName = []
     for k in range(0, len(FileList)):
@@ -503,7 +512,7 @@ def trainModel():
 
     x_train, x_val, y_train, y_val = train_test_split(x_data, y_data, test_size=0.1, random_state=2022)
 
-    #print(x_train.shape, y_train.shap)
+    # print(x_train.shape, y_train.shap)
     from tensorflow.keras.models import Sequential
     from tensorflow.keras.layers import LSTM, Dense
 
