@@ -126,7 +126,7 @@ def deleteDatasetNameFunction(name,func,rep):
 
 
 
-def RecordGesture(idx, name):
+def RecordGesture(idx, name, func):
     import cv2
     import mediapipe as mp
     import numpy as np
@@ -138,7 +138,7 @@ def RecordGesture(idx, name):
     sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
     sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
-    actions = [name]
+    actions = [func]
     seq_length = 10  # 10으로 변경
     secs_for_action = 10  # 10으로 변경
 
@@ -425,6 +425,8 @@ def gesture_recognition():
                 this_action = '?'
                 if action_seq[-1] == action_seq[-2] == action_seq[-3] == action_seq[-4] == action_seq[-5]:
                     this_action = action
+                    print(this_action)
+                    action_seq.clear()
                     doFuction(this_action)
                 cv2.putText(img, f'{this_action.upper()}',
                             org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)),
@@ -449,10 +451,14 @@ def trainModel():
     for k in range(0, len(FileList)):
         if 'seq_' in FileList[k]:
             datasetName.append('./dataset/' + FileList[k])
-    print(datasetName)
+    for p in range(0, len(datasetName)):
+        print(datasetName[p])
+    A = np.load(datasetName[0])
+    for i in range(1, len(datasetName)):
+        N = np.load(datasetName[i])
+        A = np.concatenate((A, N), axis=0)
 
-    for i in range(0, len(datasetName)):
-        data = np.concatenate([np.load(datasetName[i])], axis=0)
+    data = A
 
     data.shape
 
@@ -471,7 +477,7 @@ def trainModel():
     x_data = x_data.astype(np.float32)
     y_data = y_data.astype(np.float32)
 
-    x_train, x_val, y_train, y_val = train_test_split(x_data, y_data, test_size=0.1, random_state=2021)
+    x_train, x_val, y_train, y_val = train_test_split(x_data, y_data, test_size=0.1, random_state=2022)
 
     #print(x_train.shape, y_train.shap)
     from tensorflow.keras.models import Sequential
@@ -540,5 +546,3 @@ def find_max_seqnum():
     print(dataset_num)
 
     return max(dataset_num)
-
-
