@@ -180,6 +180,13 @@ class ModifyUI(QMainWindow):
         self.playList = [self.play_1, self.play_2, self.play_3, self.play_4, self.play_5, \
                          self.play_6, self.play_7, self.play_8]
 
+        #저장버튼 리스트
+        self.saveList = [self.save_1, self.save_2, self.save_3, self.save_4, self.save_5, \
+                         self.save_6, self.save_7, self.save_8]
+
+        self.deleteList = [self.delete_1, self.delete_2, self.delete_3, self.delete_4, self.delete_5, \
+                           self.delete_6, self.delete_7, self.delete_8]
+
         self.dataset_name = list()
         self.dataset_func = list()
         self.videoList = list()
@@ -238,6 +245,8 @@ class ModifyUI(QMainWindow):
             self.nameList[nameidx].setText(QCoreApplication.translate("", self.dataset_name[i]))
             self.plusList[nameidx].hide()
             self.playList[nameidx].show()
+            self.saveList[nameidx].show()
+            self.deleteList[nameidx].show()
             nameidx += 1
 
         for j in range(len(self.dataset_func)):
@@ -252,6 +261,8 @@ class ModifyUI(QMainWindow):
             self.functionList[funcidx].setCurrentText('---------')
             self.plusList[nameidx].show()
             self.playList[nameidx].hide()
+            self.saveList[nameidx].hide()
+            self.deleteList[nameidx].hide()
             nameidx += 1
             funcidx += 1
 
