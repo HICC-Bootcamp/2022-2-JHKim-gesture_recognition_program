@@ -1,7 +1,7 @@
-dataset_name = []  # dataset 이름
-dataset_function = []  # dataset 기능
+datasetName = []  # dataset 이름
+datasetFunction = []  # dataset 기능
 
-start_button_clicknum = 0
+startButtonClickNum = 0
 
 
 def datasetIsEmpty():  # dataset이 비어있는지 확인하는 함수, 비어있으면 1 아니면 0을 return
@@ -9,7 +9,7 @@ def datasetIsEmpty():  # dataset이 비어있는지 확인하는 함수, 비어�
     os.makedirs('dataset', exist_ok=True)
     path = './dataset'
     length = len(os.listdir(path))
-    if (length > 0):
+    if length > 0:
         print('dataset is not empty')
         return 0
     else:
@@ -18,25 +18,25 @@ def datasetIsEmpty():  # dataset이 비어있는지 확인하는 함수, 비어�
 
 
 def addInformation(name, function):  # 이름과 기능을 리스트에 저장하는 함수
-    dataset_name.append(name)
-    dataset_function.append(function)
-    print('dataset_name =', dataset_name)
-    print('dataset_function =', dataset_function)
+    datasetName.append(name)
+    datasetFunction.append(function)
+    print('dataset_name =', datasetName)
+    print('dataset_function =', datasetFunction)
 
 
 def confirmRepetition():
-    n = len(dataset_function)
+    n = len(datasetFunction)
     for x in range(0, n):
-        first = dataset_function[x]
+        first = datasetFunction[x]
         for y in range(x + 1, n):
-            second = dataset_function[y]
+            second = datasetFunction[y]
             if first == second:
                 return 1
-    n = len(dataset_name)
+    n = len(datasetName)
     for x in range(0, n):
-        first = dataset_name[x]
+        first = datasetName[x]
         for y in range(x + 1, n):
-            second = dataset_name[y]
+            second = datasetName[y]
             if first == second:
                 return 1
     return 0
@@ -119,7 +119,7 @@ def countNumOfDataset():
     import os
     path = './dataset'
     length = len(os.listdir(path)) / 2
-    if (length > 2):
+    if length > 2:
         print('More than 2 datasets exist')
         return 1
     else:
@@ -127,30 +127,31 @@ def countNumOfDataset():
         return 0
 
 
-def getDataset_name():
-    return dataset_name
+def getDatasetName():
+    return datasetName
 
 
-def getDataset_function():
-    return dataset_function
+def getDatasetFunction():
+    return datasetFunction
 
 
 def deleteDatasetNameFunction(name, func, rep):
-    dataset_name.remove(name)
-    dataset_function.remove(func)
-    if rep == False:
+    datasetName.remove(name)
+    datasetFunction.remove(func)
+    if not rep:
         import os
-        FileList = os.listdir('./dataset')
-        for i in range(0, len(FileList)):
-            if name in FileList[i]:
-                os.remove('./dataset/' + FileList[i])
+        fileList = os.listdir('./dataset')
+        for i in range(0, len(fileList)):
+            if name in fileList[i]:
+                os.remove('./dataset/' + fileList[i])
 
 
-def RecordGesture(idx, name, func):
+def recordGesture(idx, name, func):
     import cv2
     import mediapipe as mp
     import numpy as np
-    import time, os
+    import time
+    import os
 
     import sys
     import io
@@ -159,13 +160,13 @@ def RecordGesture(idx, name, func):
     sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
     actions = [func]
-    seq_length = 10  # 10으로 변경
-    secs_for_action = 30  # 10으로 변경
+    seqLength = 10  # 10으로 변경
+    secsForAction = 30  # 10으로 변경
 
     # mediapipe initialize
-    mp_hands = mp.solutions.hands
-    mp_drawing = mp.solutions.drawing_utils
-    hands = mp_hands.Hands(
+    mpHands = mp.solutions.hands
+    mpDrawing = mp.solutions.drawing_utils
+    hands = mpHands.Hands(
         max_num_hands=1,
         min_detection_confidence=0.5,
         min_tracking_confidence=0.5)
@@ -173,7 +174,7 @@ def RecordGesture(idx, name, func):
     # webcam initialize
     cap = cv2.VideoCapture(0)
 
-    created_time = int(time.time())
+    createdTime = int(time.time())
 
     # make folder for save datasets
     os.makedirs('dataset', exist_ok=True)
@@ -200,9 +201,9 @@ def RecordGesture(idx, name, func):
             cv2.imshow('img', img)
             cv2.waitKey(3000)
 
-            start_time = time.time()
+            startTime = time.time()
 
-            while time.time() - start_time < secs_for_action:  # 설정한 시간 만큼 반복
+            while time.time() - startTime < secsForAction:  # 설정한 시간 만큼 반복
                 ret, img = cap.read()  # frame 영상 저장 위해 추가
                 ret, frame = cap.read()
 
@@ -210,7 +211,7 @@ def RecordGesture(idx, name, func):
 
                 img = cv2.flip(img, 1)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                result = hands.process(img)  # 결과를 mediapipe에 넣어 준다.
+                result = hands.process(img)  # 결과를 mediapipe 에 넣어 준다.
                 img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
                 # 결과를 가지고 값들을 뽑아 내는 과정
@@ -237,14 +238,14 @@ def RecordGesture(idx, name, func):
 
                         angle = np.degrees(angle)  # Convert radian to degree
 
-                        angle_label = np.array([angle], dtype=np.float32)
-                        angle_label = np.append(angle_label, idx)  # 0, 1, 2
+                        angleLabel = np.array([angle], dtype=np.float32)
+                        angleLabel = np.append(angleLabel, idx)  # 0, 1, 2
 
-                        d = np.concatenate([joint.flatten(), angle_label])
+                        d = np.concatenate([joint.flatten(), angleLabel])
 
                         data.append(d)
 
-                        mp_drawing.draw_landmarks(img, res, mp_hands.HAND_CONNECTIONS)  # 랜드마크 그린다.
+                        mpDrawing.draw_landmarks(img, res, mpHands.HAND_CONNECTIONS)  # 랜드마크 그린다.
 
                 cv2.imshow('img', img)
                 if cv2.waitKey(1) == ord('q'):
@@ -252,129 +253,122 @@ def RecordGesture(idx, name, func):
 
             data = np.array(data)  # 데이터를 모았으면 numpy 배열로 변환
             print(action, data.shape)
-            np.save(os.path.join('dataset', f'raw_%d_%s_{created_time}' % (idx, name)), data)  # npy형식으로 파일 저장
+            np.save(os.path.join('dataset', f'raw_%d_%s_{createdTime}' % (idx, name)), data)  # npy형식으로 파일 저장
 
             # Create sequence data
-            full_seq_data = []
-            for seq in range(len(data) - seq_length):
-                full_seq_data.append(data[seq:seq + seq_length])
+            fullSeqData = []
+            for seq in range(len(data) - seqLength):
+                fullSeqData.append(data[seq:seq + seqLength])
 
-            full_seq_data = np.array(full_seq_data)
-            print(action, full_seq_data.shape)
-            np.save(os.path.join('dataset', f'seq_%d_%s_{created_time}' % (idx, name)), full_seq_data)
+            fullSeqData = np.array(fullSeqData)
+            print(action, fullSeqData.shape)
+            np.save(os.path.join('dataset', f'seq_%d_%s_{createdTime}' % (idx, name)), fullSeqData)
         break
 
     cv2.destroyAllWindows()
 
 
 def changeModel(num, oldName, name, func):
-    global dataset_name
-    global dataset_function
-    dataset_name[num] = name
-    dataset_function[num] = func
+    global datasetName
+    global datasetFunction
+    datasetName[num] = name
+    datasetFunction[num] = func
     import os
-    FileList = os.listdir('./dataset')
-    for i in range(0, len(FileList)):
-        if oldName in FileList[i]:
-            FileName = FileList[i]
-            file_oldname = os.path.join('./dataset', FileName)
-            File_name = FileName.split('_')
-            File_name[2] = name
-            FileName = '_'.join(File_name)
-            print(FileName)
-            file_newname_newfile = os.path.join('./dataset', FileName)
-            os.rename(file_oldname, file_newname_newfile)
-            print(FileName)
+    fileList = os.listdir('./dataset')
+    for i in range(0, len(fileList)):
+        if oldName in fileList[i]:
+            fileName = fileList[i]
+            fileOldName = os.path.join('./dataset', fileName)
+            fileName = fileName.split('_')
+            fileName[2] = name
+            fileName = '_'.join(fileName)
+            print(fileName)
+            fileNewNameNewFile = os.path.join('./dataset', fileName)
+            os.rename(fileOldName, fileNewNameNewFile)
+            print(fileName)
     print(name, ', ', func, '이 등록되었습니다.')
 
 
 def changeNameFunction(num, name, func):
-    dataset_name[num] = name
-    dataset_function[num] = func
-    print(dataset_name[num], ', ', dataset_function[num], '이 등록되었습니다.')
+    datasetName[num] = name
+    datasetFunction[num] = func
+    print(datasetName[num], ', ', datasetFunction[num], '이 등록되었습니다.')
 
 
 def changeVidName(oldName, NewName):
     import os
-    FileList = os.listdir()
-    for i in range(len(FileList)):
-        if oldName in FileList[i]:
-            file_oldname = os.path.join('', FileList[i])
-            file_newname_newfile = os.path.join("", NewName + '.mp4')
-            os.rename(file_oldname, file_newname_newfile)
-            print(file_oldname, '이 ', file_newname_newfile, '로 변경되었습니다.')
+    fileList = os.listdir()
+    for i in range(len(fileList)):
+        if oldName in fileList[i]:
+            fileOldName = os.path.join('', fileList[i])
+            fileNewNameNewFile = os.path.join("", NewName + '.mp4')
+            os.rename(fileOldName, fileNewNameNewFile)
+            print(fileOldName, '이 ', fileNewNameNewFile, '로 변경되었습니다.')
             break
 
 
 def deleteVideo(name):
     import os
-    FileList = os.listdir()
-    for i in range(len(FileList)):
-        if name + '.mp4' in FileList[i]:
-            os.remove(FileList[i])
-            print(FileList[i], '가 삭제 되었습니다.')
+    fileList = os.listdir()
+    for i in range(len(fileList)):
+        if name + '.mp4' in fileList[i]:
+            os.remove(fileList[i])
+            print(fileList[i], '가 삭제 되었습니다.')
             break
 
 
-def ReadDatasetInformation():
+def readDatasetInformation():
     import os
     if os.path.isfile('datasetInformation.txt'):
         print('Dataset 정보 파일 존재')
         f = open("datasetInformation.txt", "r")
         line = f.readline()
-        list = line.split(' ')
-        list.remove('\n')
-        global dataset_name
-        dataset_name = list
-        print('dataset_name = ', dataset_name)
+        list_ = line.split(' ')
+        list_.remove('\n')
+        global datasetName
+        datasetName = list_
+        print('dataset_name = ', datasetName)
 
         line = f.readline()
-        list = line.split(' ')
-        list.remove('\n')
-        global dataset_function
-        dataset_function = list
-        print('dataset_function = ', dataset_function)
-
-        # line = f.readline()
-        # dataset_image = line.split(' ')
-        # dataset_image.remove('')
-        # print('dataset_image = ', dataset_image)
+        list_ = line.split(' ')
+        list_.remove('\n')
+        global datasetFunction
+        datasetFunction = list_
+        print('dataset_function = ', datasetFunction)
 
         f.close()
     else:
         print("Dataset 정보 파일 존재X")
 
 
-def WriteDatasetInformation():
+def writeDatasetInformation():
     f = open("datasetInformation.txt", "w")
-    for n in range(0, len(dataset_name)):
-        f.write(dataset_name[n])
+    for n in range(0, len(datasetName)):
+        f.write(datasetName[n])
         f.write(' ')
     f.write('\n')
-    for n in range(0, len(dataset_name)):
-        f.write(dataset_function[n])
+    for n in range(0, len(datasetName)):
+        f.write(datasetFunction[n])
         f.write(' ')
     f.write('\n')
-    # for n in range(0, len(dataset_name)):
-    # f.write(dataset_image[n])
-    # f.write(' ')
+
     f.close()
 
 
-def gesture_recognition():
+def gestureRecognition():
     import cv2
     import mediapipe as mp
     import numpy as np
     from tensorflow.keras.models import load_model
     import time
 
-    global dataset_function
-    actions = dataset_function
-    seq_length = 10
+    global datasetFunction
+    actions = datasetFunction
+    seqLength = 10
     model = load_model('models/model.h5')
-    mp_hands = mp.solutions.hands
-    mp_drawing = mp.solutions.drawing_utils
-    hands = mp_hands.Hands(
+    mpHands = mp.solutions.hands
+    mpDrawing = mp.solutions.drawing_utils
+    hands = mpHands.Hands(
         max_num_hands=1,
         min_detection_confidence=0.5,
         min_tracking_confidence=0.5)
@@ -388,13 +382,13 @@ def gesture_recognition():
     # out2 = cv2.VideoWriter('output.mp4', fourcc, cap.get(cv2.CAP_PROP_FPS), (w, h))
 
     seq = []
-    action_seq = []
+    actionSeq = []
     # before_action='?'
-    this_action = []
-    this_action.append('?')
+    thisAction = []
+    thisAction.append('?')
 
     while cap.isOpened():
-        if start_button_clicknum == 1:
+        if startButtonClickNum == 1:
             cv2.destroyAllWindows()
             return
 
@@ -429,36 +423,36 @@ def gesture_recognition():
 
                 seq.append(d)
 
-                mp_drawing.draw_landmarks(img, res, mp_hands.HAND_CONNECTIONS)
+                mpDrawing.draw_landmarks(img, res, mpHands.HAND_CONNECTIONS)
 
-                if len(seq) < seq_length:
+                if len(seq) < seqLength:
                     continue
 
-                input_data = np.expand_dims(np.array(seq[-seq_length:], dtype=np.float32), axis=0)
+                inputData = np.expand_dims(np.array(seq[-seqLength:], dtype=np.float32), axis=0)
 
-                y_pred = model.predict(input_data).squeeze()
+                yPred = model.predict(inputData).squeeze()
 
-                i_pred = int(np.argmax(y_pred))
-                conf = y_pred[i_pred]
+                iPred = int(np.argmax(yPred))
+                conf = yPred[iPred]
 
                 if conf < 0.9:
                     continue
 
-                action = actions[i_pred]
-                action_seq.append(action)
+                action = actions[iPred]
+                actionSeq.append(action)
 
-                if len(action_seq) < 5:
+                if len(actionSeq) < 5:
                     continue
 
-                if action_seq[-1] == action_seq[-2] == action_seq[-3] == action_seq[-4] == action_seq[-5]:
-                    this_action.append(action)
-                    print(this_action)
-                    if len(this_action) > 3:
-                        if this_action[-1] == this_action[-2] == this_action[-3]:
-                            doFunction(this_action[-1])
-                            action_seq.clear()
+                if actionSeq[-1] == actionSeq[-2] == actionSeq[-3] == actionSeq[-4] == actionSeq[-5]:
+                    thisAction.append(action)
+                    print(thisAction)
+                    if len(thisAction) > 3:
+                        if thisAction[-1] == thisAction[-2] == thisAction[-3]:
+                            doFunction(thisAction[-1])
+                            actionSeq.clear()
 
-                            cv2.putText(img, f'{this_action[-1].upper()}',
+                            cv2.putText(img, f'{thisAction[-1].upper()}',
                                         org=(int(res.landmark[0].x * img.shape[1]),
                                              int(res.landmark[0].y * img.shape[0] + 20)),
                                         fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255),
@@ -476,48 +470,48 @@ def trainModel():
 
     os.environ['CUDA_VISIBLE_DEVICES'] = '1'
     os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
-    actions = dataset_function
+    actions = datasetFunction
 
     # dataset에서 seq만 읽기
-    FileList = os.listdir('./dataset')
+    fileList_ = os.listdir('./dataset')
     datasetName = []
-    for k in range(0, len(FileList)):
-        if 'seq_' in FileList[k]:
-            datasetName.append('./dataset/' + FileList[k])
+    for k in range(0, len(fileList_)):
+        if 'seq_' in fileList_[k]:
+            datasetName.append('./dataset/' + fileList_[k])
     for p in range(0, len(datasetName)):
         print(datasetName[p])
-    A = np.load(datasetName[0])
+    result = np.load(datasetName[0])
     for i in range(1, len(datasetName)):
-        N = np.load(datasetName[i])
-        A = np.concatenate((A, N), axis=0)
+        temp = np.load(datasetName[i])
+        result = np.concatenate((result, temp), axis=0)
 
-    data = A
+    data = result
 
     data.shape
 
-    x_data = data[:, :, :-1]
+    xData = data[:, :, :-1]
     labels = data[:, 0, -1]
 
-    print(x_data.shape)
+    print(xData.shape)
     print(labels.shape)
 
     from tensorflow.keras.utils import to_categorical
 
-    y_data = to_categorical(labels, num_classes=len(actions))
-    y_data.shape
+    yData = to_categorical(labels, num_classes=len(actions))
+    yData.shape
     from sklearn.model_selection import train_test_split
 
-    x_data = x_data.astype(np.float32)
-    y_data = y_data.astype(np.float32)
+    xData = xData.astype(np.float32)
+    yData = yData.astype(np.float32)
 
-    x_train, x_val, y_train, y_val = train_test_split(x_data, y_data, test_size=0.1, random_state=2022)
+    xTrain, xVal, yTrain, yVal = train_test_split(xData, yData, test_size=0.1, random_state=2022)
 
-    # print(x_train.shape, y_train.shap)
+    # print(xTrain.shape, yTrain.shap)
     from tensorflow.keras.models import Sequential
     from tensorflow.keras.layers import LSTM, Dense
 
     model = Sequential([
-        LSTM(64, activation='relu', input_shape=x_train.shape[1:3]),
+        LSTM(64, activation='relu', input_shape=xTrain.shape[1:3]),
         Dense(32, activation='relu'),
         Dense(len(actions), activation='softmax')
     ])
@@ -527,9 +521,9 @@ def trainModel():
     from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 
     history = model.fit(
-        x_train,
-        y_train,
-        validation_data=(x_val, y_val),
+        xTrain,
+        yTrain,
+        validation_data=(xVal, yVal),
         epochs=50,
         callbacks=[
             ModelCheckpoint('models/model.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
@@ -541,41 +535,41 @@ def trainModel():
 
     model = load_model('models/model.h5')
 
-    y_pred = model.predict(x_val)
+    yPred = model.predict(xVal)
 
-    multilabel_confusion_matrix(np.argmax(y_val, axis=1), np.argmax(y_pred, axis=1))
+    multilabel_confusion_matrix(np.argmax(yVal, axis=1), np.argmax(yPred, axis=1))
 
     return True
 
 
-def start_gesture():
-    global start_button_clicknum
-    start_button_clicknum = 0
+def startGesture():
+    global startButtonClickNum
+    startButtonClickNum = 0
 
 
-def stop_gesture():
-    global start_button_clicknum
-    start_button_clicknum = 1
+def stopGesture():
+    global startButtonClickNum
+    startButtonClickNum = 1
 
 
-def find_max_seqnum():
+def findMaxSeqNum():
     import os
-    FileList = os.listdir('./dataset')
+    fileList = os.listdir('./dataset')
     datasetName = []
-    dataset_split = []
-    for k in range(0, len(FileList)):
-        if 'seq_' in FileList[k]:
-            datasetName.append(FileList[k])
+    datasetSplit = []
+    for k in range(0, len(fileList)):
+        if 'seq_' in fileList[k]:
+            datasetName.append(fileList[k])
 
-    for l in range(len(datasetName)):
-        dataset_split.append(datasetName[l].split('_'))
+    for n in range(len(datasetName)):
+        datasetSplit.append(datasetName[n].split('_'))
 
-    print(dataset_split)
+    print(datasetSplit)
 
-    dataset_num = []
-    for seq, num, name, npy in dataset_split:
-        dataset_num.append(int(num))
+    datasetNum = []
+    for seq, num, name, npy in datasetSplit:
+        datasetNum.append(int(num))
 
-    print(dataset_num)
+    print(datasetNum)
 
-    return max(dataset_num)
+    return max(datasetNum)
